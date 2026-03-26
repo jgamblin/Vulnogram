@@ -3,16 +3,16 @@
 extends ../splash
 
 block content
-  .px-8.py-10(class="sm:px-10 sm:py-12")
-    h1.text-2xl.font-bold.text-slate-900.mb-1(class="dark:text-white") Sign in
-    p.text-slate-500.text-sm.mb-8(class="dark:text-slate-400") Enter your credentials to continue
+  div
+    h1.font-bold.text-slate-900.mb-1(class="text-3xl dark:text-white") Sign in
+    p.text-sm.mb-8(class="text-slate-500 dark:text-slate-400") Enter your credentials to continue
     form(method='POST', action='/users/login')
       input(type='hidden', name='_csrf', value=csrfToken)
       .space-y-5
         div
-          label.block.text-sm.font-medium.text-slate-700(class="mb-1.5 dark:text-slate-300", for='login-username') Username
-          input#login-username.block.w-full.px-4.rounded-xl.text-slate-900.placeholder-slate-400.transition-colors(name='username', type='text', autocomplete='username', class="py-3 text-base bg-slate-50 dark:bg-slate-700/60 border border-slate-300 dark:border-slate-600 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent")
+          label.block.text-sm.font-semibold.text-slate-700(class="mb-2 dark:text-slate-300", for='login-username') Username
+          input#login-username.block.w-full.px-4.rounded-xl.transition-colors(name='username', type='text', autocomplete='username', class="py-3 text-base bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent")
         div
-          label.block.text-sm.font-medium.text-slate-700(class="mb-1.5 dark:text-slate-300", for='login-password') Password
-          input#login-password.block.w-full.px-4.rounded-xl.text-slate-900.placeholder-slate-400.transition-colors(name='password', type='password', autocomplete='current-password', class="py-3 text-base bg-slate-50 dark:bg-slate-700/60 border border-slate-300 dark:border-slate-600 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent")
-        button.w-full.bg-indigo-600.text-white.font-semibold.rounded-xl.shadow-sm.transition-colors(class="py-3 hover:bg-indigo-700 active:bg-indigo-800", type='submit') Sign in
+          label.block.text-sm.font-semibold.text-slate-700(class="mb-2 dark:text-slate-300", for='login-password') Password
+          input#login-password.block.w-full.px-4.rounded-xl.transition-colors(name='password', type='password', autocomplete='current-password', class="py-3 text-base bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent")
+        button.w-full.text-white.font-semibold.rounded-xl.shadow-sm.transition-all(class="py-3 text-base bg-indigo-600 hover:bg-indigo-700 active:scale-95 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2", type='submit') Sign in

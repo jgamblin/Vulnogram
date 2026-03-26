@@ -1,5 +1,5 @@
 //- Copyright (c) 2017-2026 Chandan B N. All rights reserved.
-//- Vulnogram 2.0 — splash/login layout
+//- Vulnogram 2.0 — splash/login layout (split-panel design)
 
 doctype html
 html.h-full
@@ -8,17 +8,40 @@ html.h-full
     script.
       (function(){var t=localStorage.getItem('vg-theme');if(t==='dark')document.documentElement.classList.add('dark');else if(!t&&window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.classList.add('dark');})();
     include head
-  body.h-full.min-h-screen.flex.flex-col.items-center.justify-center.p-4(class="bg-gradient-to-br from-indigo-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-950")
-    .w-full.max-w-md
-      .text-center.mb-8
-        .text-4xl.font-bold.tracking-tight.text-slate-900(class="dark:text-white") ◈ Vulnogram
-        p.text-sm.mt-2.text-slate-500(class="dark:text-slate-400") Making the world safer, one CVE at a time
-      .rounded-2xl.shadow-2xl.overflow-hidden.bg-white(class="dark:bg-slate-800")
-        !=messages()
-        block content
-      .text-center.mt-6
-        include foot
-    button#vg-theme-btn.fixed.bottom-4.right-4.rounded-full.text-slate-600.transition-colors(class="p-2.5 bg-white/80 dark:bg-slate-800/80 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 shadow-md backdrop-blur", aria-label="Toggle theme")
+  body.h-full.min-h-screen(class="dark:bg-slate-900")
+    .flex.min-h-screen
+      //- Left brand panel — hidden on mobile, shown lg+
+      aside.hidden.flex-col.justify-between(class="lg:flex lg:w-5/12 xl:w-1/2 bg-gradient-to-br from-indigo-700 via-indigo-800 to-slate-900 p-12 relative overflow-hidden")
+        //- Decorative background rings
+        .absolute.rounded-full.opacity-10(style="width:600px;height:600px;background:white;top:-200px;left:-200px;")
+        .absolute.rounded-full.opacity-5(style="width:400px;height:400px;background:white;bottom:-100px;right:-150px;")
+        //- Logo
+        .relative.flex.items-center.gap-3
+          svg.text-white(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:36px;height:36px")
+            path(fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.75.75 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Z" clip-rule="evenodd")
+          span.text-white.font-bold.text-2xl.tracking-tight Vulnogram
+        //- Headline
+        .relative
+          h1.text-white.font-extrabold(style="font-size:2.5rem;line-height:1.15") Making the<br>world safer,<br>one CVE at a time.
+          p(class="mt-5 text-indigo-200 text-base leading-relaxed") The professional platform for vulnerability<br>analysts and security researchers.
+        //- Footer
+        .relative
+          p(class="text-indigo-300 text-xs") #{conf.classification} &nbsp;·&nbsp; #{conf.copyright}
+      //- Right form panel
+      main.flex.flex-col.justify-center.flex-1(class="px-5 py-12 sm:px-10 lg:px-16 xl:px-24 bg-white dark:bg-slate-900")
+        .w-full.max-w-sm.mx-auto
+          //- Mobile-only logo (hidden on lg+)
+          .flex.items-center.gap-2.mb-10(class="lg:hidden")
+            svg.text-indigo-600(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:28px;height:28px")
+              path(fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.75.75 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Z" clip-rule="evenodd")
+            span.font-bold.text-xl.text-slate-900(class="dark:text-white") Vulnogram
+          !=messages()
+          block content
+          .mt-8.text-center
+            p(class="text-xs text-slate-400 dark:text-slate-500")
+              small= [conf.orgName, conf.groupName].filter(Boolean).join(' ')
+    //- Theme toggle
+    button#vg-theme-btn.fixed.bottom-4.right-4.rounded-full.text-slate-600.transition-colors(class="p-2.5 bg-white dark:bg-slate-800 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 shadow-lg border border-slate-200 dark:border-slate-700", aria-label="Toggle theme")
       span#vg-theme-icon
         svg.w-5.h-5(xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true")
           path(stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z")
