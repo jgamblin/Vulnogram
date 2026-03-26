@@ -1,368 +1,350 @@
 /*
- * Vulnogram 2.0 — Form design system
- * Ground-up redesign targeting the actual json-editor DOM structure.
- * Inspired by Linear, GitHub, and modern security tool UX (2026).
+ * Vulnogram 2.0 — Form Design System (v3, ground-up)
+ * Target: clean 2026 security-tool aesthetic — Linear / GitHub / Vercel
+ * Key fix: .btn rule does NOT use display:!important to avoid showing
+ *          json-editor's conditionally-hidden toggle/save/cancel buttons.
  */
 
 /* ================================================================
    DESIGN TOKENS
    ================================================================ */
 :root {
+  --vg-radius:    10px;
   --vg-radius-sm:  6px;
-  --vg-radius-md:  8px;
-  --vg-radius-lg:  12px;
-  --vg-input-h:    38px;
-  --vg-field-lbl:  108px;
-
-  --vg-surface:    #ffffff;
-  --vg-surface-2:  #f8fafc;
-  --vg-surface-3:  #f1f5f9;
-  --vg-border:     #e2e8f0;
-  --vg-border-2:   #cbd5e1;
-  --vg-text:       #0f172a;
-  --vg-text-2:     #475569;
-  --vg-text-3:     #94a3b8;
-  --vg-accent:     #4f46e5;
-  --vg-accent-2:   #6366f1;
-  --vg-accent-bg:  #eef2ff;
-  --vg-accent-bdr: #c7d2fe;
-  --vg-shadow:     0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
-  --vg-shadow-md:  0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --vg-radius-xs:  4px;
+  --vg-input-h:   34px;
+  --vg-label-w:  120px;
+  --vg-surface:   #ffffff;
+  --vg-surface-2: #f8fafc;
+  --vg-surface-3: #f1f5f9;
+  --vg-border:    #e2e8f0;
+  --vg-border-2:  #cbd5e1;
+  --vg-text:      #0f172a;
+  --vg-text-2:    #475569;
+  --vg-text-3:    #94a3b8;
+  --vg-accent:    #4f46e5;
+  --vg-accent-h:  #4338ca;
+  --vg-accent-bg: #eef2ff;
+  --vg-accent-bd: #c7d2fe;
+  --vg-danger:    #ef4444;
+  --vg-shadow:    0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
 }
 
 html.dark {
-  --vg-surface:    #1e293b;
-  --vg-surface-2:  #162032;
-  --vg-surface-3:  #0f172a;
-  --vg-border:     #334155;
-  --vg-border-2:   #475569;
-  --vg-text:       #f1f5f9;
-  --vg-text-2:     #94a3b8;
-  --vg-text-3:     #475569;
-  --vg-accent:     #6366f1;
-  --vg-accent-2:   #818cf8;
-  --vg-accent-bg:  #1e1b4b;
-  --vg-accent-bdr: #3730a3;
-  --vg-shadow:     0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
-  --vg-shadow-md:  0 4px 16px rgba(0,0,0,0.4);
-
-  /* min.css token bridge */
-  --acc: #6366f1;
-  --shd: rgba(99,102,241,0.25);
-  --bor: #334155;
-  --bg1: #0f172a;
-  --bg2: #1e293b;
-  --wht: #263347;
-  --txt: #e2e8f0;
-  --dis: #64748b;
+  --vg-surface:   #1e293b;
+  --vg-surface-2: #162032;
+  --vg-surface-3: #0f172a;
+  --vg-border:    #334155;
+  --vg-border-2:  #475569;
+  --vg-text:      #f1f5f9;
+  --vg-text-2:    #94a3b8;
+  --vg-text-3:    #475569;
+  --vg-accent:    #6366f1;
+  --vg-accent-h:  #4f46e5;
+  --vg-accent-bg: #1e1b4b;
+  --vg-accent-bd: #3730a3;
+  --vg-danger:    #f87171;
+  --vg-shadow:    0 1px 3px rgba(0,0,0,0.3);
+  --acc: #6366f1; --shd: rgba(99,102,241,0.25);
+  --bor: #334155; --bg1: #0f172a; --bg2: #1e293b;
+  --wht: #263347; --txt: #e2e8f0; --dis: #64748b;
 }
 
 /* ================================================================
-   SECTION CARDS   (.je-object__container.sec)
+   HIDE JSON-EDITOR CHROME
+   json-editor adds style="display:none" on these buttons dynamically.
+   Our .btn rule must NOT use display:!important or it un-hides them.
+   Belt-and-suspenders: also explicitly hide by class name.
+   ================================================================ */
+.json-editor-btntype-toggle,
+.json-editor-btntype-editjson,
+.json-editor-btntype-properties,
+.json-editor-btntype-save,
+.json-editor-btntype-copy,
+.json-editor-btntype-cancel {
+  display: none !important;
+}
+
+/* ================================================================
+   SECTION CARDS  (.je-object__container.sec)
    ================================================================ */
 .je-object__container.sec {
-  background: var(--vg-surface) !important;
-  border: 1px solid var(--vg-border) !important;
-  border-radius: var(--vg-radius-lg) !important;
-  padding: 0 !important;
-  box-shadow: var(--vg-shadow);
-  margin-bottom: 16px !important;
-  overflow: hidden;
+  background:    var(--vg-surface) !important;
+  border:        1px solid var(--vg-border) !important;
+  border-radius: var(--vg-radius) !important;
+  padding:       0 !important;
+  margin-bottom: 12px !important;
+  overflow:      hidden;
+  box-shadow:    var(--vg-shadow);
 }
 
-/* Section header bar */
 .je-object__container.sec > span.je-object__title {
-  display: flex !important;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px !important;
-  background: var(--vg-surface-2) !important;
+  display:       flex !important;
+  align-items:   center !important;
+  padding:       0 16px !important;
+  height:        38px !important;
+  background:    var(--vg-surface-2) !important;
   border-bottom: 1px solid var(--vg-border) !important;
-  min-height: 40px;
+  gap:           8px;
 }
 
-/* Section title text */
-.je-object__container.sec > span.je-object__title > span:not(.btn):not(button) {
-  font-size: 11.5px !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.08em !important;
+.je-object__container.sec > span.je-object__title > span:not(.je-object__controls) {
+  font-size:      11px !important;
+  font-weight:    700 !important;
+  letter-spacing: 0.09em !important;
   text-transform: uppercase !important;
-  color: var(--vg-text-2) !important;
+  color:          var(--vg-text-2) !important;
 }
 
-/* Remove extra padding from inner panel */
+/* je-object__controls is a sibling of je-object__title inside .sec */
+.je-object__container.sec > span.je-object__controls { display: none !important; }
+
 .je-object__container.sec .je-indented-panel {
   padding: 0 !important;
-  margin: 0 !important;
-  border: none !important;
+  margin:  0 !important;
+  border:  none !important;
 }
 
 /* ================================================================
    FORM ROWS inside sections
    ================================================================ */
 .je-object__container.sec .row {
-  display: flex !important;
+  display:        flex !important;
   flex-direction: row !important;
-  align-items: center !important;
-  min-height: 52px;
-  padding: 8px 16px !important;
-  border-bottom: 1px solid var(--vg-border) !important;
-  margin: 0 !important;
-  gap: 12px;
-  box-sizing: border-box;
+  align-items:    center !important;
+  min-height:     44px;
+  padding:        4px 16px !important;
+  border-bottom:  1px solid var(--vg-border) !important;
+  margin:         0 !important;
+  box-sizing:     border-box;
 }
 
-.je-object__container.sec .row:last-child {
-  border-bottom: none !important;
-}
+.je-object__container.sec .row:last-child { border-bottom: none !important; }
 
-/* Column inside row */
 .je-object__container.sec .row > [data-schematype],
 .je-object__container.sec .row > div[data-schemapath] {
-  flex: 1;
-  min-width: 0;
+  flex: 1; min-width: 0;
 }
 
-/* The field wrapper div: label | control as a flex row
-   CRITICAL: do NOT use descendant selector — only direct child,
-   to avoid also styling the .form-control divs inside .rdg pills */
+/* Field wrapper — DIRECT child only (not .rdg inner .form-controls) */
 .je-object__container.sec [data-schematype] > div:first-of-type {
-  display: flex !important;
+  display:        flex !important;
   flex-direction: row !important;
-  align-items: center !important;
-  gap: 0 !important;
-  width: 100%;
+  align-items:    center !important;
+  width:          100%;
+  min-width:      0;
 }
 
-/* Field label — fixed left column */
-.je-object__container.sec [data-schematype] > div > label.lbl:first-child,
-.je-object__container.sec .form-control > label.lbl:first-child {
-  min-width: var(--vg-field-lbl) !important;
-  width: var(--vg-field-lbl) !important;
-  flex-shrink: 0 !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  color: var(--vg-text-2) !important;
-  padding: 0 12px 0 0 !important;
-  margin: 0 !important;
-  border: none !important;
-  background: none !important;
-  white-space: nowrap;
-  text-align: right;
-  display: inline-flex !important;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 4px;
-  box-shadow: none !important;
+.je-object__container.sec [data-schematype] > div > label.lbl:first-child {
+  min-width:     var(--vg-label-w) !important;
+  width:         var(--vg-label-w) !important;
+  flex-shrink:   0 !important;
+  font-size:     12px !important;
+  font-weight:   500 !important;
+  color:         var(--vg-text-2) !important;
+  padding:       0 !important;
+  margin:        0 !important;
+  border:        none !important;
+  background:    none !important;
+  white-space:   nowrap;
+  display:       inline-flex !important;
+  align-items:   center !important;
+  gap:           5px !important;
+  box-shadow:    none !important;
   border-radius: 0 !important;
-  text-transform: capitalize;
-  letter-spacing: 0;
 }
 
-/* Separator line between label and control */
-.je-object__container.sec [data-schematype] > div > label.lbl:first-child::after,
-.je-object__container.sec .form-control > label.lbl:first-child::after {
-  content: '';
-  display: inline-block;
-  width: 1px;
-  height: 14px;
-  background: var(--vg-border);
-  margin-left: 12px;
+.je-object__container.sec [data-schematype] > div > label.lbl:first-child::after {
+  content:     '';
+  display:     inline-block;
+  width:       1px;
+  height:      12px;
+  background:  var(--vg-border-2);
+  margin-left: 10px;
   flex-shrink: 0;
+  opacity:     0.5;
 }
 
-/* Controls fill remaining space */
 .je-object__container.sec [data-schematype] > div > .rdg,
 .je-object__container.sec [data-schematype] > div > .txt,
 .je-object__container.sec [data-schematype] > div > .out,
-.je-object__container.sec [data-schematype] > div > tags.tagify {
-  flex: 1 1 0 !important;
-  min-width: 0 !important;
-  margin-left: 12px;
+.je-object__container.sec [data-schematype] > div > tags.tagify,
+.je-object__container.sec [data-schematype] > div > select {
+  flex:        1 1 0 !important;
+  min-width:   0 !important;
+  margin-left: 12px !important;
 }
 
-/* rdg inside a sec must be block-level flex (not inline-flex)
-   so it expands to fill the available row width */
-.je-object__container.sec [data-schematype] > div > .rdg {
-  display: flex !important;
-}
+/* rdg inside section must be block flex to expand */
+.je-object__container.sec [data-schematype] > div > .rdg { display: flex !important; }
 
-/* Required star */
 label.lbl.req::before {
-  content: '* ';
-  color: #ef4444;
-  font-size: 10px;
+  content:        '*';
+  color:          var(--vg-danger);
+  font-size:      9px;
+  margin-right:   2px;
+  vertical-align: super;
 }
 
 /* ================================================================
-   TOP-LEVEL ROWS (CVE ID, Title, Products etc.)
-   ================================================================ */
-[data-schemaid="root"] > .je-indented-panel > div > div > .row {
-  padding: 10px 2px !important;
-  gap: 12px;
-  border-bottom: 1px solid var(--vg-border) !important;
-  margin-bottom: 0 !important;
-  align-items: flex-start !important;
-}
-
-[data-schemaid="root"] > .je-indented-panel > div > div > .row:last-child {
-  border-bottom: none !important;
-}
-
-/* ================================================================
-   TEXT INPUTS  (.txt)
+   TEXT INPUTS & TEXTAREAS
    ================================================================ */
 .txt {
-  height: var(--vg-input-h) !important;
-  padding: 0 12px !important;
-  background: var(--vg-surface) !important;
-  border: 1.5px solid var(--vg-border) !important;
-  border-radius: var(--vg-radius-md) !important;
-  color: var(--vg-text) !important;
-  font-size: 13.5px !important;
-  line-height: 1 !important;
-  width: 100%;
-  box-sizing: border-box;
-  box-shadow: none !important;
-  transition: border-color 0.15s, box-shadow 0.15s !important;
-  font-family: inherit !important;
+  height:        var(--vg-input-h) !important;
+  padding:       0 10px !important;
+  background:    var(--vg-surface) !important;
+  border:        1px solid var(--vg-border) !important;
+  border-radius: var(--vg-radius-sm) !important;
+  color:         var(--vg-text) !important;
+  font-size:     13px !important;
+  line-height:   1 !important;
+  width:         100%;
+  box-sizing:    border-box;
+  box-shadow:    none !important;
+  transition:    border-color 0.12s, box-shadow 0.12s !important;
+  font-family:   inherit !important;
 }
-
 textarea.txt {
-  height: auto !important;
-  min-height: 72px !important;
-  padding: 10px 12px !important;
+  height:      auto !important;
+  min-height:  76px !important;
+  padding:     8px 10px !important;
   line-height: 1.5 !important;
-  resize: vertical !important;
+  resize:      vertical !important;
 }
-
 .txt:focus {
   border-color: var(--vg-accent) !important;
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.12) !important;
-  outline: none !important;
+  box-shadow:   0 0 0 3px rgba(99,102,241,0.15) !important;
+  outline:      none !important;
+}
+.txt:hover:not(:focus) { border-color: var(--vg-border-2) !important; }
+.txt:disabled, .txt[readonly="true"] {
+  background:  var(--vg-surface-2) !important;
+  color:       var(--vg-text-2) !important;
+  box-shadow:  none !important;
+  cursor:      default !important;
 }
 
-.txt:hover:not(:focus) {
-  border-color: var(--vg-border-2) !important;
-}
-
-.txt:disabled,
-.txt[readonly="true"] {
-  background: var(--vg-surface-2) !important;
-  color: var(--vg-text-2) !important;
-  border-color: var(--vg-border) !important;
-  cursor: default !important;
-  box-shadow: none !important;
-}
-
-/* Date inputs */
 .editor input[type="date"],
 .editor input[type="datetime-local"] {
-  height: var(--vg-input-h) !important;
-  padding: 0 10px !important;
-  background: var(--vg-surface) !important;
-  border: 1.5px solid var(--vg-border) !important;
-  border-radius: var(--vg-radius-md) !important;
-  color: var(--vg-text) !important;
-  font-size: 13.5px !important;
-  box-shadow: none !important;
-  transition: border-color 0.15s, box-shadow 0.15s !important;
+  height:        var(--vg-input-h) !important;
+  padding:       0 10px !important;
+  background:    var(--vg-surface) !important;
+  border:        1px solid var(--vg-border) !important;
+  border-radius: var(--vg-radius-sm) !important;
+  color:         var(--vg-text) !important;
+  font-size:     13px !important;
+  box-shadow:    none !important;
 }
-
 .editor input[type="date"]:focus,
 .editor input[type="datetime-local"]:focus {
   border-color: var(--vg-accent) !important;
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.12) !important;
-  outline: none !important;
+  outline:      none !important;
+  box-shadow:   0 0 0 3px rgba(99,102,241,0.15) !important;
 }
-
 html.dark .editor input[type="date"],
 html.dark .editor input[type="datetime-local"] { color-scheme: dark; }
+
+input:required, textarea:required, select:required {
+  box-shadow: none !important; border-color: var(--vg-border) !important;
+}
+input:invalid, textarea:invalid, select:invalid,
+form:invalid, #vgHead form:invalid, #vgHead input:invalid {
+  box-shadow: none !important; border-color: var(--vg-border) !important;
+}
+form:invalid { border: 0 !important; box-shadow: none !important; }
+input:user-invalid, textarea:user-invalid {
+  border-color: var(--vg-danger) !important;
+  box-shadow:   0 0 0 3px rgba(239,68,68,0.1) !important;
+}
+
+/* ================================================================
+   SELECTS
+   ================================================================ */
+.je-switcher, .editor select, select.txt {
+  height:        var(--vg-input-h) !important;
+  padding:       0 10px !important;
+  background:    var(--vg-surface) !important;
+  border:        1px solid var(--vg-border) !important;
+  border-radius: var(--vg-radius-sm) !important;
+  color:         var(--vg-text) !important;
+  font-size:     13px !important;
+  box-shadow:    none !important;
+}
+.je-switcher:focus, .editor select:focus {
+  border-color: var(--vg-accent) !important;
+  box-shadow:   0 0 0 3px rgba(99,102,241,0.15) !important;
+  outline:      none !important;
+}
+
+.out { border: 1px solid var(--vg-border) !important; border-radius: var(--vg-radius-sm) !important; }
+.out:focus-within { border-color: var(--vg-accent) !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.15) !important; }
 
 /* ================================================================
    RADIO / CHECKBOX PILL GROUPS  (.rdg)
    ================================================================ */
 .rdg {
-  display: inline-flex !important;
-  flex-wrap: wrap !important;
-  gap: 4px !important;
+  display:     inline-flex !important;
+  flex-wrap:   wrap !important;
+  gap:         4px !important;
   align-items: center !important;
 }
+.rdg input[type="radio"], .rdg input[type="checkbox"] { display: none !important; }
 
-.rdg .form-control { display: inline-flex !important; }
-
-.rdg input[type="radio"],
-.rdg input[type="checkbox"] { display: none !important; }
-
-/* Unselected pill */
 .rdg .lbl {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 5px !important;
-  height: 28px !important;
-  padding: 0 11px !important;
-  margin: 0 !important;
-  background: var(--vg-surface-2) !important;
-  border: 1.5px solid var(--vg-border) !important;
+  display:       inline-flex !important;
+  align-items:   center !important;
+  gap:           4px !important;
+  height:        26px !important;
+  padding:       0 10px !important;
+  margin:        0 !important;
+  background:    var(--vg-surface-2) !important;
+  border:        1px solid var(--vg-border) !important;
   border-radius: var(--vg-radius-sm) !important;
-  color: var(--vg-text-2) !important;
-  font-size: 12.5px !important;
-  font-weight: 500 !important;
-  cursor: pointer !important;
-  white-space: nowrap !important;
-  user-select: none !important;
-  transition: all 0.12s ease !important;
-  box-shadow: none !important;
+  color:         var(--vg-text-2) !important;
+  font-size:     12px !important;
+  font-weight:   500 !important;
+  cursor:        pointer !important;
+  white-space:   nowrap !important;
+  user-select:   none !important;
+  transition:    all 0.1s !important;
+  box-shadow:    none !important;
 }
-
 .rdg .lbl:hover {
-  background: var(--vg-accent-bg) !important;
-  border-color: var(--vg-accent-bdr) !important;
-  color: var(--vg-accent) !important;
-  box-shadow: none !important;
-  z-index: 1;
+  background:   var(--vg-accent-bg) !important;
+  border-color: var(--vg-accent-bd) !important;
+  color:        var(--vg-accent) !important;
 }
-
-/* Selected pill */
 .rdg input[type="radio"]:checked + .lbl,
 .rdg input[type="checkbox"]:checked + .lbl {
-  background: var(--vg-accent) !important;
+  background:   var(--vg-accent) !important;
   border-color: var(--vg-accent) !important;
-  color: #fff !important;
-  box-shadow: 0 1px 4px rgba(79,70,229,0.35) !important;
-  font-weight: 600 !important;
+  color:        #fff !important;
+  font-weight:  600 !important;
+  box-shadow:   0 1px 3px rgba(79,70,229,0.3) !important;
 }
-
 .rdg input[type="radio"]:checked + .lbl:hover {
-  background: #4338ca !important;
-  border-color: #4338ca !important;
+  background: var(--vg-accent-h) !important; border-color: var(--vg-accent-h) !important;
 }
-
-/* Override min.css merged-group first/last radius tricks */
-.rdg :first-child .lbl,
-.rdg :last-child .lbl {
+.rdg :first-child .lbl, .rdg :last-child .lbl {
   border-radius: var(--vg-radius-sm) !important;
-  border-right-width: 1.5px !important;
+  border-right-width: 1px !important;
   margin-left: 0 !important;
 }
 
 /* ================================================================
    CVSS4 SEVERITY COLORS — scoped to CVSS4 only
-   These colors (green→yellow→orange→red) come from cvss4/style.css
-   but we re-declare them with !important scoped to [data-schemaid="cvss4"]
-   so they override the indigo accent without polluting other forms.
    ================================================================ */
-[data-schemaid="cvss4"] .rdg .form-control:first-child input[type="radio"]:checked + label {
+[data-schemaid="cvss4"] .rdg .form-control:first-child input:checked + label {
   background: rgb(162,213,114) !important; border-color: rgb(162,213,114) !important; color: #1a3c00 !important;
 }
-[data-schemaid="cvss4"] .rdg .form-control input[type="radio"]:checked + label {
+[data-schemaid="cvss4"] .rdg .form-control input:checked + label {
   background: rgb(250,230,120) !important; border-color: rgb(250,230,120) !important; color: #3d2e00 !important;
 }
-[data-schemaid="cvss4"] .rdg .form-control:nth-child(3) input[type="radio"]:checked + label {
+[data-schemaid="cvss4"] .rdg .form-control:nth-child(3) input:checked + label {
   background: rgb(240,170,83) !important; border-color: rgb(240,170,83) !important; color: #3d1a00 !important;
 }
-[data-schemaid="cvss4"] .rdg .form-control:nth-child(4) input[type="radio"]:checked + label,
-[data-schemaid="cvss4"] .rdg .form-control:last-child input[type="radio"]:checked + label {
+[data-schemaid="cvss4"] .rdg .form-control:nth-child(4) input:checked + label,
+[data-schemaid="cvss4"] .rdg .form-control:last-child input:checked + label {
   background: rgb(240,130,120) !important; border-color: rgb(240,130,120) !important; color: #3d0000 !important;
 }
 [data-schemaid="cvss4"] .rdg .form-control input[value="NOT_DEFINED"]:checked + label,
@@ -375,18 +357,17 @@ html.dark .editor input[type="datetime-local"] { color-scheme: dark; }
 [data-schemaid="cvss4"] .rdg .form-control input[value="AMBER"]:checked + label {
   background: rgb(255,213,28) !important; border-color: rgb(255,213,28) !important; color: #3d2e00 !important;
 }
-
-html.dark [data-schemaid="cvss4"] .rdg .form-control:first-child input[type="radio"]:checked + label {
+html.dark [data-schemaid="cvss4"] .rdg .form-control:first-child input:checked + label {
   background: #166534 !important; border-color: #166534 !important; color: #bbf7d0 !important;
 }
-html.dark [data-schemaid="cvss4"] .rdg .form-control input[type="radio"]:checked + label {
+html.dark [data-schemaid="cvss4"] .rdg .form-control input:checked + label {
   background: #854d0e !important; border-color: #854d0e !important; color: #fef3c7 !important;
 }
-html.dark [data-schemaid="cvss4"] .rdg .form-control:nth-child(3) input[type="radio"]:checked + label {
+html.dark [data-schemaid="cvss4"] .rdg .form-control:nth-child(3) input:checked + label {
   background: #9a3412 !important; border-color: #9a3412 !important; color: #fed7aa !important;
 }
-html.dark [data-schemaid="cvss4"] .rdg .form-control:nth-child(4) input[type="radio"]:checked + label,
-html.dark [data-schemaid="cvss4"] .rdg .form-control:last-child input[type="radio"]:checked + label {
+html.dark [data-schemaid="cvss4"] .rdg .form-control:nth-child(4) input:checked + label,
+html.dark [data-schemaid="cvss4"] .rdg .form-control:last-child input:checked + label {
   background: #991b1b !important; border-color: #991b1b !important; color: #fee2e2 !important;
 }
 html.dark [data-schemaid="cvss4"] .rdg .form-control input[value="NOT_DEFINED"]:checked + label,
@@ -402,326 +383,220 @@ html.dark [data-schemaid="cvss4"] .rdg .form-control input[value="AMBER"]:checke
 
 /* ================================================================
    BUTTONS
+   IMPORTANT: .btn does NOT set display !important — that would
+   override json-editor's inline style="display:none" on hidden buttons.
    ================================================================ */
 .btn {
-  height: 32px !important;
-  padding: 0 12px !important;
-  background: var(--vg-surface-2) !important;
-  border: 1.5px solid var(--vg-border) !important;
-  border-radius: var(--vg-radius-md) !important;
-  color: var(--vg-text-2) !important;
-  font-size: 12.5px !important;
-  font-weight: 500 !important;
-  cursor: pointer !important;
+  height:        30px !important;
+  padding:       0 10px !important;
+  background:    var(--vg-surface-2) !important;
+  border:        1px solid var(--vg-border) !important;
+  border-radius: var(--vg-radius-sm) !important;
+  color:         var(--vg-text-2) !important;
+  font-size:     12px !important;
+  font-weight:   500 !important;
+  cursor:        pointer !important;
+  align-items:   center !important;
+  gap:           4px !important;
+  box-shadow:    none !important;
+  transition:    background 0.1s, border-color 0.1s, color 0.1s !important;
+  white-space:   nowrap;
+}
+/* Only set display on btns that are NOT json-editor hidden controls */
+.btn:not(.json-editor-btntype-toggle):not(.json-editor-btntype-editjson):not(.json-editor-btntype-properties):not(.json-editor-btntype-save):not(.json-editor-btntype-copy):not(.json-editor-btntype-cancel) {
   display: inline-flex !important;
-  align-items: center !important;
-  gap: 5px !important;
-  box-shadow: none !important;
-  transition: all 0.12s ease !important;
-  white-space: nowrap;
 }
+.btn:hover { background: var(--vg-surface-3) !important; border-color: var(--vg-border-2) !important; color: var(--vg-text) !important; }
+.btn:active { opacity: 0.85 !important; }
 
-.btn:hover {
-  background: var(--vg-surface-3) !important;
-  border-color: var(--vg-border-2) !important;
-  color: var(--vg-text) !important;
-  box-shadow: var(--vg-shadow) !important;
+.btn.sfe { background: var(--vg-accent) !important; border-color: var(--vg-accent) !important; color: #fff !important; }
+.btn.sfe:hover { background: var(--vg-accent-h) !important; border-color: var(--vg-accent-h) !important; }
+
+.btn.red { background: #fef2f2 !important; border-color: #fca5a5 !important; color: #dc2626 !important; }
+.btn.red:hover { background: #dc2626 !important; border-color: #dc2626 !important; color: #fff !important; }
+html.dark .btn.red { background: #450a0a !important; border-color: #991b1b !important; color: #fca5a5 !important; }
+
+/* Array ADD — dashed accent */
+.json-editor-btn-add.json-editor-btntype-add {
+  display:       inline-flex !important;
+  align-items:   center !important;
+  gap:           5px !important;
+  height:        28px !important;
+  padding:       0 10px !important;
+  background:    transparent !important;
+  border:        1px dashed var(--vg-accent-bd) !important;
+  border-radius: var(--vg-radius-sm) !important;
+  color:         var(--vg-accent) !important;
+  font-size:     12px !important;
+  font-weight:   500 !important;
+  cursor:        pointer !important;
+  box-shadow:    none !important;
+  transition:    all 0.1s !important;
 }
-
-.btn:active { opacity: 0.8 !important; box-shadow: none !important; }
-
-/* Add-item array button — dashed indigo */
-.json-editor-btn-add,
-button.json-editor-btn-add {
-  height: 34px !important;
-  padding: 0 14px !important;
-  background: transparent !important;
-  border: 1.5px dashed var(--vg-accent-bdr) !important;
-  border-radius: var(--vg-radius-md) !important;
-  color: var(--vg-accent) !important;
-  font-size: 12.5px !important;
-  font-weight: 600 !important;
-  cursor: pointer !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 5px !important;
-  box-shadow: none !important;
-  transition: all 0.12s ease !important;
-  margin-left: 0 !important;
-  margin-top: 8px !important;
-}
-
-.json-editor-btn-add:hover,
-button.json-editor-btn-add:hover {
-  background: var(--vg-accent-bg) !important;
+.json-editor-btn-add.json-editor-btntype-add:hover {
+  background:   var(--vg-accent-bg) !important;
   border-style: solid !important;
   border-color: var(--vg-accent) !important;
 }
 
-/* Delete button */
-td > span:first-child > .json-editor-btn-delete,
-.json-editor-btn-delete {
-  background: transparent !important;
-  border: none !important;
-  color: var(--vg-text-3) !important;
-  opacity: 0.7 !important;
-  padding: 4px !important;
-  border-radius: 6px !important;
-  transition: all 0.12s !important;
+/* Array "Delete Last" — ghost */
+.json-editor-btntype-deletelast {
+  display:       inline-flex !important;
+  align-items:   center !important;
+  gap:           4px !important;
+  height:        26px !important;
+  padding:       0 8px !important;
+  background:    transparent !important;
+  border:        1px solid var(--vg-border) !important;
+  border-radius: var(--vg-radius-sm) !important;
+  color:         var(--vg-text-3) !important;
+  font-size:     11px !important;
+  cursor:        pointer !important;
+  box-shadow:    none !important;
 }
+.json-editor-btntype-deletelast:hover {
+  border-color: #fca5a5 !important; color: #dc2626 !important; background: #fef2f2 !important;
+}
+html.dark .json-editor-btntype-deletelast:hover { background: #450a0a !important; border-color: #991b1b !important; }
 
-.json-editor-btn-delete:hover {
-  color: #ef4444 !important;
-  background: #fef2f2 !important;
-  opacity: 1 !important;
+/* Array "Delete All" — text only */
+.json-editor-btntype-deleteall {
+  display:       inline-flex !important;
+  align-items:   center !important;
+  gap:           3px !important;
+  height:        24px !important;
+  padding:       0 7px !important;
+  background:    transparent !important;
+  border:        none !important;
+  color:         var(--vg-text-3) !important;
+  font-size:     11px !important;
+  cursor:        pointer !important;
+  box-shadow:    none !important;
 }
+.json-editor-btntype-deleteall:hover {
+  color:         #dc2626 !important;
+  background:    #fef2f2 !important;
+  border-radius: var(--vg-radius-xs) !important;
+}
+html.dark .json-editor-btntype-deleteall:hover { background: #450a0a !important; }
 
-html.dark .json-editor-btn-delete:hover {
-  background: #450a0a !important;
-}
-
-/* .rbtn icon buttons */
-.rbtn {
-  background: var(--vg-surface-2) !important;
-  border: 1.5px solid var(--vg-border) !important;
-  border-radius: var(--vg-radius-md) !important;
-  color: var(--vg-text-2) !important;
-  box-shadow: none !important;
-  transition: all 0.12s !important;
-}
-
-.rbtn:hover {
-  background: var(--vg-surface-3) !important;
-  border-color: var(--vg-border-2) !important;
-  color: var(--vg-text) !important;
-  box-shadow: none !important;
-}
-
-/* .fbn flat icon buttons */
-.fbn {
-  border-radius: var(--vg-radius-md) !important;
-  color: var(--vg-text-2) !important;
-  transition: all 0.12s !important;
-}
-
-.fbn:hover {
-  background: var(--vg-surface-3) !important;
-  color: var(--vg-text) !important;
-  box-shadow: none !important;
-}
+.rbtn { background: var(--vg-surface-2) !important; border: 1px solid var(--vg-border) !important; border-radius: var(--vg-radius-sm) !important; color: var(--vg-text-2) !important; box-shadow: none !important; }
+.rbtn:hover { background: var(--vg-surface-3) !important; border-color: var(--vg-border-2) !important; color: var(--vg-text) !important; }
+.fbn { border-radius: var(--vg-radius-sm) !important; color: var(--vg-text-2) !important; }
+.fbn:hover { background: var(--vg-surface-3) !important; color: var(--vg-text) !important; }
 
 /* ================================================================
    ARRAY ITEM CARDS
    ================================================================ */
 .editor div[vg="array-obj"] {
-  background: var(--vg-surface) !important;
-  border: 1.5px solid var(--vg-border) !important;
-  border-radius: var(--vg-radius-lg) !important;
-  padding: 14px 14px 10px !important;
-  margin-top: 8px !important;
-  margin-bottom: 8px !important;
-  position: relative !important;
-  box-shadow: var(--vg-shadow) !important;
+  background:    var(--vg-surface) !important;
+  border:        1px solid var(--vg-border) !important;
+  border-radius: var(--vg-radius-sm) !important;
+  padding:       10px 12px 8px !important;
+  margin-top:    6px !important;
+  margin-bottom: 6px !important;
+  position:      relative !important;
 }
-
-.editor div[vg="array-obj"]:hover {
-  border-color: var(--vg-border-2) !important;
-}
-
-.editor span[vg="obj-del"] {
-  position: absolute !important;
-  top: 10px !important;
-  right: 10px !important;
-}
-
-.editor div[vg="array-obj"] .row {
-  border-bottom: 1px solid var(--vg-surface-3) !important;
-  padding: 6px 0 !important;
-  margin: 0 !important;
-}
-
-.editor div[vg="array-obj"] .row:last-child {
-  border-bottom: none !important;
-}
-
-/* ================================================================
-   SECTION HEADERS (h3, h4)
-   ================================================================ */
-.editor h3,
-.editor h4 {
-  font-size: 11.5px !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.08em !important;
-  color: var(--vg-text-3) !important;
-  margin: 14px 0 6px !important;
-  padding: 0 !important;
-  border: none !important;
-  background: none !important;
-}
-
-/* ================================================================
-   TAB RADIO LABELS
-   ================================================================ */
-input.tab[type="radio"] + .lbl {
-  height: 36px !important;
-  padding: 0 16px !important;
-  background: var(--vg-surface-2) !important;
-  border: 1.5px solid var(--vg-border) !important;
-  border-bottom: 0 !important;
-  border-top-left-radius: var(--vg-radius-md) !important;
-  border-top-right-radius: var(--vg-radius-md) !important;
-  border-bottom-left-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
-  color: var(--vg-text-2) !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-  margin-left: 3px !important;
-  cursor: pointer !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  transition: all 0.12s !important;
-}
-
-input.tab[type="radio"] + .lbl:hover {
-  background: var(--vg-surface-3) !important;
-  color: var(--vg-text) !important;
-}
-
-input.tab[type="radio"]:checked + .lbl {
-  background: var(--vg-surface) !important;
-  border-color: var(--vg-border) !important;
-  border-bottom: 1px solid transparent !important;
-  color: var(--vg-accent) !important;
-  font-weight: 700 !important;
-  margin-bottom: -1px !important;
-  z-index: 3 !important;
-}
-
-/* ================================================================
-   .out INLINE INPUT GROUPS
-   ================================================================ */
-.out {
-  border: 1.5px solid var(--vg-border) !important;
-  border-radius: var(--vg-radius-md) !important;
-}
-
-.out:focus-within {
-  border-color: var(--vg-accent) !important;
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.12) !important;
-}
+.editor div[vg="array-obj"]:hover { border-color: var(--vg-border-2) !important; }
+.editor span[vg="obj-del"] { position: absolute !important; top: 8px !important; right: 8px !important; }
+.editor div[vg="array-obj"] > span.je-object__title { display: none !important; }
+.editor div[vg="array-obj"] .row { border-bottom: 1px solid var(--vg-surface-3) !important; padding: 4px 0 !important; margin: 0 !important; }
+.editor div[vg="array-obj"] .row:last-child { border-bottom: none !important; }
 
 /* ================================================================
    TAGIFY
    ================================================================ */
 tags.tagify {
-  border: 1.5px solid var(--vg-border) !important;
-  border-radius: var(--vg-radius-md) !important;
-  background: var(--vg-surface) !important;
-  min-height: var(--vg-input-h) !important;
-  padding: 3px 8px !important;
-  box-shadow: none !important;
+  border: 1px solid var(--vg-border) !important;
+  border-radius: var(--vg-radius-sm) !important;
+  background:    var(--vg-surface) !important;
+  min-height:    var(--vg-input-h) !important;
+  padding:       3px 8px !important;
+  box-shadow:    none !important;
 }
+tags.tagify:focus-within { border-color: var(--vg-accent) !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.15) !important; }
 
-tags.tagify:focus-within {
-  border-color: var(--vg-accent) !important;
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.12) !important;
+/* ================================================================
+   EDITOR TABS
+   ================================================================ */
+input.tab[type="radio"] + .lbl {
+  height:                     34px !important;
+  padding:                    0 14px !important;
+  background:                 var(--vg-surface-2) !important;
+  border:                     1px solid var(--vg-border) !important;
+  border-bottom:              0 !important;
+  border-top-left-radius:     var(--vg-radius-sm) !important;
+  border-top-right-radius:    var(--vg-radius-sm) !important;
+  border-bottom-left-radius:  0 !important;
+  border-bottom-right-radius: 0 !important;
+  color:                      var(--vg-text-2) !important;
+  font-size:                  12.5px !important;
+  font-weight:                500 !important;
+  margin-left:                2px !important;
+  cursor:                     pointer !important;
+  display:                    inline-flex !important;
+  align-items:                center !important;
+  transition:                 all 0.1s !important;
+}
+input.tab[type="radio"] + .lbl:hover { background: var(--vg-surface-3) !important; color: var(--vg-text) !important; }
+input.tab[type="radio"]:checked + .lbl {
+  background:    var(--vg-surface) !important;
+  border-color:  var(--vg-border) !important;
+  border-bottom: 1px solid transparent !important;
+  color:         var(--vg-accent) !important;
+  font-weight:   700 !important;
+  margin-bottom: -1px !important;
+  z-index:       3 !important;
 }
 
 /* ================================================================
-   SELECTS
+   CVSS4 GROUPED ROWS
    ================================================================ */
-.je-switcher,
-.editor select,
-select.txt {
-  height: var(--vg-input-h) !important;
-  padding: 0 10px !important;
-  background: var(--vg-surface) !important;
-  border: 1.5px solid var(--vg-border) !important;
-  border-radius: var(--vg-radius-md) !important;
-  color: var(--vg-text) !important;
-  font-size: 13.5px !important;
-  box-shadow: none !important;
+div[data-schemaid="cvss4"] .je-indented-panel div div div.row:nth-child(7),
+div[data-schemaid="cvss4"] .je-indented-panel div div div.row:nth-child(8),
+div[data-schemaid="cvss4"] .je-indented-panel div div div.row:nth-child(9) {
+  background:    var(--vg-surface-2) !important;
+  border-radius: var(--vg-radius-sm) !important;
+  border:        1px solid var(--vg-border) !important;
+  margin-bottom: 4px !important;
+  padding:       6px 12px !important;
 }
-
-.je-switcher:focus,
-.editor select:focus {
-  border-color: var(--vg-accent) !important;
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.12) !important;
-  outline: none !important;
-}
-
-/* ================================================================
-   REQUIRED / INVALID — suppress min.css red-on-load
-   ================================================================ */
-input:required,
-textarea:required,
-select:required {
-  box-shadow: none !important;
-  border-color: var(--vg-border) !important;
-}
-
-input:invalid,
-textarea:invalid,
-select:invalid,
-form:invalid,
-#vgHead form:invalid,
-#vgHead input:invalid {
-  box-shadow: none !important;
-  border-color: var(--vg-border) !important;
-}
-
-form:invalid { border: 0 !important; box-shadow: none !important; }
-
-input:user-invalid,
-textarea:user-invalid {
-  border-color: #f87171 !important;
-  box-shadow: 0 0 0 3px rgba(239,68,68,0.1) !important;
+div[data-schemaid="cvss4"] .je-indented-panel div div div.row:last-child {
+  background:    var(--vg-accent-bg) !important;
+  border:        1px solid var(--vg-accent-bd) !important;
+  border-radius: var(--vg-radius-sm) !important;
+  padding:       8px 12px !important;
+  margin:        6px 0 !important;
 }
 
 /* ================================================================
    CVSS SCORE BADGES
    ================================================================ */
-.CVSS.NA       { background: #64748b; color: #fff; border-radius: 6px; }
-.CVSS.NONE     { background: #16a34a; color: #fff; border-radius: 6px; }
-.CVSS.LOW      { background: #65a30d; color: #fff; border-radius: 6px; }
-.CVSS.MEDIUM   { background: #ca8a04; color: #fff; border-radius: 6px; }
-.CVSS.HIGH     { background: #ea580c; color: #fff; border-radius: 6px; }
-.CVSS.CRITICAL { background: #dc2626; color: #fff; border-radius: 6px; }
-
-/* ================================================================
-   CVSS4 grouped rows
-   ================================================================ */
-div[data-schemaid="cvss4"] .je-indented-panel div div div.row:nth-child(7),
-div[data-schemaid="cvss4"] .je-indented-panel div div div.row:nth-child(8),
-div[data-schemaid="cvss4"] .je-indented-panel div div div.row:nth-child(9) {
-  background: var(--vg-surface-2) !important;
-  border-radius: var(--vg-radius-md) !important;
-  border: 1px solid var(--vg-border) !important;
-  margin-bottom: 4px !important;
-  padding: 8px 12px !important;
-}
-
-div[data-schemaid="cvss4"] .je-indented-panel div div div.row:last-child {
-  background: var(--vg-accent-bg) !important;
-  border: 1.5px solid var(--vg-accent-bdr) !important;
-  border-radius: var(--vg-radius-md) !important;
-  padding: 10px 12px !important;
-  margin: 8px 0 !important;
-}
+.CVSS.NA       { background: #64748b; color: #fff; border-radius: 5px; padding: 1px 6px; }
+.CVSS.NONE     { background: #16a34a; color: #fff; border-radius: 5px; padding: 1px 6px; }
+.CVSS.LOW      { background: #65a30d; color: #fff; border-radius: 5px; padding: 1px 6px; }
+.CVSS.MEDIUM   { background: #ca8a04; color: #fff; border-radius: 5px; padding: 1px 6px; }
+.CVSS.HIGH     { background: #ea580c; color: #fff; border-radius: 5px; padding: 1px 6px; }
+.CVSS.CRITICAL { background: #dc2626; color: #fff; border-radius: 5px; padding: 1px 6px; }
 
 /* ================================================================
    MISC
    ================================================================ */
 ::placeholder { color: var(--vg-text-3) !important; }
-
 .je-infobutton-icon { color: var(--vg-text-3) !important; }
-
 .lbl[data-tooltip]:hover::after {
   background: var(--vg-surface) !important;
-  border: 1px solid var(--vg-border) !important;
-  color: var(--vg-text) !important;
-  border-radius: var(--vg-radius-md) !important;
-  box-shadow: var(--vg-shadow-md) !important;
-  font-size: 12px !important;
+  border:     1px solid var(--vg-border) !important;
+  color:      var(--vg-text) !important;
+  border-radius: var(--vg-radius-sm) !important;
+  box-shadow: var(--vg-shadow) !important;
+  font-size:  12px !important;
+}
+.vg-error, .errmsg {
+  font-size:   11.5px !important;
+  color:       var(--vg-danger) !important;
+  display:     flex !important;
+  align-items: center !important;
+  gap:         4px !important;
+  padding:     3px 0 !important;
 }
