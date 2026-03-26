@@ -1,0 +1,822 @@
+/*
+ * Vulnogram 2.0 — Modern form layer
+ *
+ * Overrides min.css form widget styles to match the 2026 Tailwind UI.
+ * Strategy: target the same selectors as min.css with higher specificity
+ * (or equal + later cascade) so we can restyle without touching min.css.
+ *
+ * Design language:
+ *   - Rounded corners (8px inputs, 10px panels, pill radio groups)
+ *   - Indigo accent (#6366f1) matching the Tailwind header/login
+ *   - Subtle shadows, smooth focus rings
+ *   - Full html.dark support
+ */
+
+/* ============================================================
+   CSS custom property bridge (indigo accent for dark mode)
+   ============================================================ */
+html.dark {
+    --acc: #6366f1;
+    --shd: rgba(99, 102, 241, 0.3);
+    --bor: #334155;
+    --bg1: #0f172a;
+    --bg2: #1e293b;
+    --wht: #263347;
+    --txt: #e2e8f0;
+    --dis: #64748b;
+}
+
+/* ============================================================
+   Base text inputs (.txt) — used for all text/url/email/etc.
+   ============================================================ */
+.txt {
+    background-color: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    color: #0f172a;
+    padding: 0.5em 0.75em;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: none;
+}
+
+.txt:focus,
+.txt:active,
+.txt:hover {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    background-color: #fff;
+    outline: none;
+}
+
+html.dark .txt {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+html.dark .txt:focus,
+html.dark .txt:active,
+html.dark .txt:hover {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    background-color: #1e293b;
+}
+
+.txt:disabled {
+    background-color: #f1f5f9;
+    color: #94a3b8;
+    border-color: #e2e8f0;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+html.dark .txt:disabled {
+    background-color: #0f172a;
+    color: #475569;
+    border-color: #1e293b;
+}
+
+textarea.txt {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* ============================================================
+   Editor date/datetime inputs
+   ============================================================ */
+.editor input[type="date"],
+.editor input[type="datetime-local"] {
+    background-color: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    color: #0f172a;
+    padding: 0.45em 0.75em;
+    font-size: 0.875rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.editor input[type="date"]:focus,
+.editor input[type="datetime-local"]:focus,
+.editor input[type="date"]:hover,
+.editor input[type="datetime-local"]:hover {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    outline: none;
+}
+
+html.dark .editor input[type="date"],
+html.dark .editor input[type="datetime-local"] {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+    color-scheme: dark;
+}
+
+html.dark .editor input[type="date"]:focus,
+html.dark .editor input[type="datetime-local"]:focus,
+html.dark .editor input[type="date"]:hover,
+html.dark .editor input[type="datetime-local"]:hover {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+/* ============================================================
+   Radio/checkbox button groups (.rdg) — pill style
+   ============================================================ */
+.rdg {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 0.8125rem;
+    align-items: center;
+}
+
+/* Each option is now a separate pill, not a merged button-group */
+.rdg .form-control {
+    display: inline-flex;
+}
+
+.rdg .lbl {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 0.3em 0.9em;
+    margin: 0;
+    margin-left: 0;
+    background-color: #f8fafc;
+    color: #475569;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.4;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.rdg .lbl:hover {
+    border-color: #6366f1;
+    color: #6366f1;
+    background-color: #eef2ff;
+    box-shadow: none;
+    z-index: 1;
+}
+
+/* Selected state — indigo pill */
+.rdg input[type="radio"]:checked + .lbl,
+.rdg input[type="checkbox"]:checked + .lbl {
+    background-color: #6366f1;
+    border-color: #6366f1;
+    color: #fff;
+    box-shadow: 0 1px 3px rgba(99, 102, 241, 0.4);
+    z-index: 1;
+}
+
+.rdg input[type="radio"]:checked + .lbl:hover,
+.rdg input[type="radio"] + .lbl:hover,
+.rdg input[type="radio"] + .lbl:active {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    z-index: 2;
+    outline: none;
+}
+
+/* First/last rounding no longer needed — all pills */
+.rdg :last-child .lbl,
+.rdg :first-child .lbl {
+    border-radius: 20px;
+    margin-left: 0;
+    border-right: 1.5px solid #e2e8f0;
+}
+
+.rdg input[type="radio"]:checked + .lbl,
+.rdg input[type="checkbox"]:checked + .lbl {
+    border-right: 1.5px solid #6366f1 !important;
+    border-left: 1.5px solid #6366f1 !important;
+}
+
+/* Dark mode pills */
+html.dark .rdg .lbl {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #94a3b8;
+}
+
+html.dark .rdg .lbl:hover {
+    border-color: #6366f1;
+    color: #a5b4fc;
+    background-color: #1e1b4b;
+}
+
+html.dark .rdg input[type="radio"]:checked + .lbl,
+html.dark .rdg input[type="checkbox"]:checked + .lbl {
+    background-color: #4f46e5;
+    border-color: #4f46e5;
+    color: #fff;
+}
+
+html.dark .rdg :last-child .lbl,
+html.dark .rdg :first-child .lbl {
+    border-right: 1.5px solid #334155;
+}
+
+html.dark .rdg input[type="radio"]:checked + .lbl,
+html.dark .rdg input[type="checkbox"]:checked + .lbl {
+    border-right: 1.5px solid #4f46e5 !important;
+    border-left: 1.5px solid #4f46e5 !important;
+}
+
+/* ============================================================
+   CVSS4 severity button colors (pill style, light + dark)
+   These override the hardcoded RGB values from cvss4/style.css
+   ============================================================ */
+
+/* Light mode severity colors — still use color coding but softer */
+.rdg .form-control:first-child input[type="radio"]:checked + label {
+    background-color: #16a34a !important;
+    border-color: #16a34a !important;
+    color: #fff !important;
+    box-shadow: 0 1px 3px rgba(22, 163, 74, 0.35) !important;
+}
+
+.rdg .form-control input[type="radio"]:checked + label {
+    background-color: #ca8a04 !important;
+    border-color: #ca8a04 !important;
+    color: #fff !important;
+}
+
+.rdg .form-control:nth-child(3) input[type="radio"]:checked + label {
+    background-color: #ea580c !important;
+    border-color: #ea580c !important;
+    color: #fff !important;
+}
+
+.rdg .form-control:nth-child(4) input[type="radio"]:checked + label,
+.rdg .form-control:last-child input[type="radio"]:checked + label {
+    background-color: #dc2626 !important;
+    border-color: #dc2626 !important;
+    color: #fff !important;
+}
+
+.rdg .form-control input[value="NOT_DEFINED"]:checked + label,
+.rdg .form-control input[value="CLEAR"]:checked + label {
+    background-color: #6366f1 !important;
+    border-color: #6366f1 !important;
+    color: #fff !important;
+}
+
+.rdg .form-control input[value="GREEN"]:checked + label {
+    background-color: #16a34a !important;
+    border-color: #16a34a !important;
+    color: #fff !important;
+}
+
+.rdg .form-control input[value="AMBER"]:checked + label {
+    background-color: #d97706 !important;
+    border-color: #d97706 !important;
+    color: #fff !important;
+}
+
+/* Dark mode severity */
+html.dark .rdg .form-control:first-child input[type="radio"]:checked + label {
+    background-color: #15803d !important;
+    border-color: #15803d !important;
+    color: #dcfce7 !important;
+    box-shadow: 0 1px 3px rgba(21, 128, 61, 0.4) !important;
+}
+
+html.dark .rdg .form-control input[type="radio"]:checked + label {
+    background-color: #a16207 !important;
+    border-color: #a16207 !important;
+    color: #fef9c3 !important;
+}
+
+html.dark .rdg .form-control:nth-child(3) input[type="radio"]:checked + label {
+    background-color: #c2410c !important;
+    border-color: #c2410c !important;
+    color: #ffedd5 !important;
+}
+
+html.dark .rdg .form-control:nth-child(4) input[type="radio"]:checked + label,
+html.dark .rdg .form-control:last-child input[type="radio"]:checked + label {
+    background-color: #991b1b !important;
+    border-color: #991b1b !important;
+    color: #fee2e2 !important;
+}
+
+html.dark .rdg .form-control input[value="NOT_DEFINED"]:checked + label,
+html.dark .rdg .form-control input[value="CLEAR"]:checked + label {
+    background-color: #4338ca !important;
+    border-color: #4338ca !important;
+    color: #e0e7ff !important;
+}
+
+html.dark .rdg .form-control input[value="GREEN"]:checked + label {
+    background-color: #15803d !important;
+    border-color: #15803d !important;
+    color: #dcfce7 !important;
+}
+
+html.dark .rdg .form-control input[value="AMBER"]:checked + label {
+    background-color: #a16207 !important;
+    border-color: #a16207 !important;
+    color: #fef9c3 !important;
+}
+
+/* ============================================================
+   Action buttons (.btn, .fbn, .rbtn)
+   ============================================================ */
+.btn {
+    background-color: #f1f5f9;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    color: #475569;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    padding: 0.4em 0.9em;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn:hover {
+    background-color: #e2e8f0;
+    border-color: #cbd5e1;
+    color: #1e293b;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.btn:active {
+    background-color: #cbd5e1;
+    opacity: 1;
+    box-shadow: none;
+}
+
+html.dark .btn {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #94a3b8;
+}
+
+html.dark .btn:hover {
+    background-color: #334155;
+    border-color: #475569;
+    color: #e2e8f0;
+    box-shadow: none;
+}
+
+html.dark .btn:active {
+    background-color: #475569;
+    opacity: 1;
+}
+
+/* Add array item button */
+.json-editor-btn-add,
+button.json-editor-btn-add {
+    background-color: #eef2ff !important;
+    border: 1.5px solid #c7d2fe !important;
+    border-radius: 8px !important;
+    color: #4f46e5 !important;
+    font-size: 0.8125rem !important;
+    font-weight: 600 !important;
+    padding: 0.35em 0.85em !important;
+    cursor: pointer !important;
+    box-shadow: none !important;
+    transition: all 0.15s ease !important;
+}
+
+.json-editor-btn-add:hover,
+button.json-editor-btn-add:hover {
+    background-color: #e0e7ff !important;
+    border-color: #a5b4fc !important;
+}
+
+html.dark .json-editor-btn-add,
+html.dark button.json-editor-btn-add {
+    background-color: #1e1b4b !important;
+    border-color: #3730a3 !important;
+    color: #a5b4fc !important;
+}
+
+html.dark .json-editor-btn-add:hover,
+html.dark button.json-editor-btn-add:hover {
+    background-color: #312e81 !important;
+}
+
+/* Delete button in arrays */
+td > span:first-child > .json-editor-btn-delete,
+.json-editor-btn-delete {
+    background-color: transparent !important;
+    border: none !important;
+    color: #ef4444 !important;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+}
+
+.json-editor-btn-delete:hover {
+    opacity: 1;
+    background-color: #fef2f2 !important;
+    border-radius: 6px !important;
+}
+
+html.dark .json-editor-btn-delete:hover {
+    background-color: #450a0a !important;
+}
+
+/* .fbn flat icon buttons */
+.fbn {
+    border-radius: 8px;
+    padding: 0.4em 0.6em;
+    color: #64748b;
+    transition: all 0.15s ease;
+}
+
+.fbn:hover {
+    background-color: #f1f5f9;
+    color: #1e293b;
+    box-shadow: none;
+}
+
+html.dark .fbn {
+    color: #94a3b8;
+}
+
+html.dark .fbn:hover {
+    background-color: #1e293b;
+    color: #e2e8f0;
+    box-shadow: none;
+}
+
+/* .rbtn circular icon buttons */
+.rbtn {
+    border-radius: 10px;
+    background-color: #f1f5f9;
+    border: 1.5px solid #e2e8f0;
+    color: #475569;
+    transition: all 0.15s ease;
+    box-shadow: none;
+}
+
+.rbtn:hover {
+    background-color: #e2e8f0;
+    border-color: #cbd5e1;
+    color: #1e293b;
+    box-shadow: none;
+}
+
+html.dark .rbtn {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #94a3b8;
+}
+
+html.dark .rbtn:hover {
+    background-color: #334155;
+    color: #e2e8f0;
+    box-shadow: none;
+}
+
+/* ============================================================
+   Section/panel structure (je-indented-panel, array-obj)
+   ============================================================ */
+.editor div[vg="array-obj"] {
+    background-color: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.25em 1.25em 1em;
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+    position: relative;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+html.dark .editor div[vg="array-obj"] {
+    background-color: #1e293b;
+    border-color: #334155;
+    box-shadow: none;
+}
+
+/* Highlighted group rows in CVSS4 */
+div[data-schemaid="cvss4"] .je-indented-panel div div div.row:nth-child(7),
+div[data-schemaid="cvss4"] .je-indented-panel div div div.row:nth-child(8),
+div[data-schemaid="cvss4"] .je-indented-panel div div div.row:nth-child(9) {
+    background-color: #f1f5f9;
+    border-radius: 10px;
+    padding: 6px 8px;
+    border: 1px solid #e2e8f0;
+}
+
+html.dark div[data-schemaid="cvss4"] .je-indented-panel div div div.row:nth-child(7),
+html.dark div[data-schemaid="cvss4"] .je-indented-panel div div div.row:nth-child(8),
+html.dark div[data-schemaid="cvss4"] .je-indented-panel div div div.row:nth-child(9) {
+    background-color: #1e293b;
+    border-color: #334155;
+}
+
+div[data-schemaid="cvss4"] .je-indented-panel div div div.row:last-child {
+    background-color: #f8fafc;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1.5px solid #c7d2fe;
+}
+
+html.dark div[data-schemaid="cvss4"] .je-indented-panel div div div.row:last-child {
+    background-color: #1e1b4b;
+    border-color: #3730a3;
+}
+
+/* ============================================================
+   Form row labels (h3/h4 section headers in editor)
+   ============================================================ */
+.editor h3,
+.editor h4 {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0.75em 0 0.35em;
+    padding: 0;
+    border: none;
+}
+
+html.dark .editor h3,
+html.dark .editor h4 {
+    color: #64748b;
+}
+
+/* Row field labels (the left-side label in each .row) */
+.row > label,
+.row > .col > label,
+.form-control > label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 3px;
+}
+
+html.dark .row > label,
+html.dark .row > .col > label,
+html.dark .form-control > label {
+    color: #94a3b8;
+}
+
+/* ============================================================
+   Tab radio selectors (Calculator / JSON / Changes tabs)
+   ============================================================ */
+input.tab[type="radio"] + .lbl {
+    background-color: #f1f5f9;
+    border: 1.5px solid #e2e8f0;
+    border-bottom: 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    color: #64748b;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.4em 1.1em;
+    margin-left: 3px;
+    margin-bottom: 0;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+input.tab[type="radio"] + .lbl:hover {
+    background-color: #e2e8f0;
+    color: #1e293b;
+}
+
+input.tab[type="radio"]:checked + .lbl {
+    background-color: #fff;
+    border-color: #e2e8f0;
+    border-bottom: 1px solid transparent;
+    color: #4f46e5;
+    font-weight: 600;
+    margin-bottom: -1px;
+    z-index: 3;
+}
+
+html.dark input.tab[type="radio"] + .lbl {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #64748b;
+}
+
+html.dark input.tab[type="radio"] + .lbl:hover {
+    background-color: #334155;
+    color: #e2e8f0;
+}
+
+html.dark input.tab[type="radio"]:checked + .lbl {
+    background-color: #0f172a;
+    border-color: #334155;
+    color: #818cf8;
+}
+
+/* ============================================================
+   .out wrapper (inline input groups)
+   ============================================================ */
+.out {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: visible;
+}
+
+.out:focus,
+.out:focus-within,
+.out:hover {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    outline: none;
+}
+
+html.dark .out {
+    border-color: #334155;
+}
+
+html.dark .out:focus,
+html.dark .out:focus-within,
+html.dark .out:hover {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+/* ============================================================
+   Tagify tag inputs
+   ============================================================ */
+tags.tagify {
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    background-color: #f8fafc !important;
+    padding: 2px 6px !important;
+    min-height: 36px !important;
+    box-shadow: none !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+tags.tagify:focus-within {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+    background-color: #fff !important;
+}
+
+html.dark tags.tagify {
+    border-color: #334155 !important;
+    background-color: #1e293b !important;
+}
+
+html.dark tags.tagify:focus-within {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+}
+
+/* ============================================================
+   je-switcher (type selector dropdown)
+   ============================================================ */
+.je-switcher {
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    background-color: #f8fafc !important;
+    color: #475569 !important;
+    font-size: 0.8125rem !important;
+    padding: 0 0.5em !important;
+    height: 32px !important;
+    transition: border-color 0.15s ease !important;
+}
+
+.je-switcher:focus {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+    outline: none !important;
+}
+
+html.dark .je-switcher {
+    border-color: #334155 !important;
+    background-color: #1e293b !important;
+    color: #94a3b8 !important;
+}
+
+html.dark .je-switcher:focus {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+}
+
+/* ============================================================
+   Required / invalid field ring — full suppression
+   min.css applies :required and :invalid broadly, making every
+   required field (and their parent <form>) show red on page load.
+   We completely neutralize this and only restore red on actual
+   user interaction via :user-invalid (Chrome 119+, FF 88+).
+   ============================================================ */
+
+/* Neutralize min.css :required ring on all form elements */
+input:required,
+textarea:required,
+select:required {
+    box-shadow: none !important;
+    border: 1.5px solid #e2e8f0 !important;
+}
+
+html.dark input:required,
+html.dark textarea:required,
+html.dark select:required {
+    border: 1.5px solid #334155 !important;
+}
+
+/* Neutralize min.css :invalid ring (fires on load for required+empty) */
+input:invalid,
+textarea:invalid,
+select:invalid,
+form:invalid,
+#vgHead form:invalid,
+#vgHead input:invalid {
+    box-shadow: none !important;
+    border-color: #e2e8f0 !important;
+}
+
+html.dark input:invalid,
+html.dark textarea:invalid,
+html.dark select:invalid {
+    border-color: #334155 !important;
+}
+
+form:invalid {
+    border: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Restore a gentle red only when the user has actually interacted */
+input:user-invalid,
+textarea:user-invalid,
+select:user-invalid {
+    border-color: #f87171 !important;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.12) !important;
+}
+
+/* Tagify required reset */
+tags.tagify[required] {
+    border: 1.5px solid #e2e8f0 !important;
+    box-shadow: none !important;
+}
+
+html.dark tags.tagify[required] {
+    border: 1.5px solid #334155 !important;
+}
+
+/* ============================================================
+   Misc editor chrome
+   ============================================================ */
+
+/* Collapse/expand span in array items */
+.editor span[vg="obj-del"] {
+    top: 0.75em;
+    right: 0.75em;
+}
+
+/* .bdg score badges in CVSS header */
+.CVSS.NA   { background-color: #94a3b8; color: #fff; border-radius: 6px; }
+.CVSS.NONE { background-color: #16a34a; color: #fff; border-radius: 6px; }
+.CVSS.LOW  { background-color: #65a30d; color: #fff; border-radius: 6px; }
+.CVSS.MEDIUM   { background-color: #ca8a04; color: #fff; border-radius: 6px; }
+.CVSS.HIGH     { background-color: #ea580c; color: #fff; border-radius: 6px; }
+.CVSS.CRITICAL { background-color: #dc2626; color: #fff; border-radius: 6px; }
+
+/* ============================================================
+   Users admin form overrides (native HTML forms in routes/users)
+   ============================================================ */
+.editor select,
+select.txt,
+select.out {
+    background-color: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    color: #0f172a;
+    padding: 0.45em 2em 0.45em 0.75em;
+    font-size: 0.875rem;
+    appearance: auto;
+    transition: border-color 0.15s ease;
+}
+
+select.txt:focus,
+.editor select:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    outline: none;
+}
+
+html.dark .editor select,
+html.dark select.txt,
+html.dark select.out {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+}
