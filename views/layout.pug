@@ -1,6 +1,8 @@
 //- Copyright (c) 2017-2026 Chandan B N. All rights reserved.
 //- Vulnogram 2.0 — Tailwind CSS UI
 
+include _icons.pug
+
 doctype html
 html.h-full
   head
@@ -26,7 +28,7 @@ html.h-full
                   - var cf = confOpts[section].conf ? confOpts[section].conf : {};
                   - var isActive = schemaName == section || (page && page.startsWith('/' + section + '/'));
                   a(href=(cf.uri ? cf.uri : '/' + section + '/'), title=cf.title, class=(isActive ? 'flex items-center gap-3 px-3 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium' : 'flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 text-sm transition-colors'))
-                    span(class=(cf.class ? cf.class : 'vgi-data'))
+                    +icon(cf.class ? cf.class : 'vgi-data')
                     span= cf.name
         .px-3.py-4.border-t.border-white.border-opacity-10.shrink-0
           block sidebarFooter
@@ -40,7 +42,7 @@ html.h-full
             .flex.items-center.gap-3.flex-1.min-w-0
               .flex.items-center.gap-2.shrink-0
                 button#vg-menu-btn.p-2.rounded-lg.text-slate-500(class="md:hidden hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800", aria-label="Open menu")
-                  span.vgi-menu
+                  +icon('menu')
                 block topHeaderLeft
                   if schemaName && confOpts && confOpts[schemaName] && !confOpts[schemaName].conf.readonly
                     if min
@@ -57,23 +59,26 @@ html.h-full
                     form.flex.items-center.bg-slate-100.border.border-slate-200.rounded-lg.overflow-hidden(class="dark:bg-slate-800 dark:border-slate-700", action='/' + schemaName, method="GET")
                       input.flex-1.bg-transparent.px-3.text-sm.outline-none.placeholder-slate-400(class="py-1.5", type="text", name="q", placeholder="Search " + schemaName, value=query ? (Array.isArray(query.q) ? query.q.join(' ') : query.q) : '')
                       button.px-3.text-slate-400(class="py-1.5 hover:text-slate-600 dark:hover:text-slate-200", type="submit")
-                        span.vgi-search
+                        +icon('search')
               .flex.items-center.gap-2.shrink-0
                 block topHeaderRight
                   block outputButtons
-                  button#vg-theme-btn.p-2.rounded-lg.text-slate-500.text-base(class="hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800", aria-label="Toggle theme") ☀
+                  button#vg-theme-btn.p-2.rounded-lg.text-slate-500(class="hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800", aria-label="Toggle theme")
+                    span#vg-theme-icon
+                      svg.w-5.h-5(xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true")
+                        path(stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z")
                   block userProfile
                     if user
                       details.relative
                         summary.flex.items-center.gap-2.px-3.rounded-lg.cursor-pointer.text-sm.text-slate-700.select-none(class="py-1.5 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800")
-                          span.vgi-user
+                          +icon('user')
                           span= user.name
                         div.absolute.right-0.top-full.mt-1.w-52.bg-white.border.border-slate-200.rounded-xl.shadow-lg.py-1.z-50(class="dark:bg-slate-800 dark:border-slate-700")
                           a.flex.items-center.gap-2.px-4.py-2.text-sm.text-slate-700(class="hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-700", href="/users/profile/" + user.username)
-                            span.vgi-edit
+                            +icon('edit')
                             | Update profile
                           a.flex.items-center.gap-2.px-4.py-2.text-sm.text-slate-700(class="hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-700", href="/users/list")
-                            span.vgi-user
+                            +icon('users')
                             | Team list
                           if opts && opts.conf && opts.conf.shortcuts
                             each shortcut in opts.conf.shortcuts
@@ -82,7 +87,7 @@ html.h-full
                                 = (shortcut.label instanceof Function ? shortcut.label(locals) : shortcut.label)
                           div.border-t.border-slate-100.my-1(class="dark:border-slate-700")
                           a.flex.items-center.gap-2.px-4.py-2.text-sm.text-red-600(class="hover:bg-slate-50 dark:text-red-400 dark:hover:bg-slate-700", href="/users/logout")
-                            span.vgi-exit
+                            +icon('exit')
                             | Logout
         //- Banner bar for shortcut pills
         block banner
@@ -139,7 +144,10 @@ html.h-full
         (function() {
           var html = document.documentElement;
           var btn = document.getElementById('vg-theme-btn');
-          function sync() { if (btn) btn.textContent = html.classList.contains('dark') ? '☾' : '☀'; }
+          var iconEl = document.getElementById('vg-theme-icon');
+          var SUN = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/></svg>';
+          var MOON = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"/></svg>';
+          function sync() { if (iconEl) iconEl.innerHTML = html.classList.contains('dark') ? SUN : MOON; }
           sync();
           if (btn) btn.addEventListener('click', function() {
             var dark = !html.classList.contains('dark');
