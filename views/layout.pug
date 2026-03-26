@@ -8,7 +8,7 @@ html.h-full
   head
     title= title
     script.
-      (function(){var t=localStorage.getItem('vg-theme');if(t==='dark')document.documentElement.classList.add('dark');else if(!t&&window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.classList.add('dark');})();
+      (function(){var t=localStorage.getItem('vg-theme');if(t==='dark')document.documentElement.classList.add('dark');else if(!t&&window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.classList.add('dark');if(localStorage.getItem('vg-sidebar-closed')==='1')document.documentElement.classList.add('sidebar-closed');})();
     block head
       include head
   body.h-full.bg-slate-100.text-slate-900(class="dark:bg-slate-950 dark:text-slate-100")
@@ -19,6 +19,8 @@ html.h-full
           block sidebarHeader
             span.text-xl.font-bold.text-white ◈ 
             span.text-xl.font-bold.text-indigo-400 Vulnogram
+          button#vg-collapse-btn.ml-auto.p-1.rounded.text-slate-400.transition-colors(class="hover:text-white hover:bg-white/10 hidden md:block", aria-label="Collapse sidebar")
+            +icon('chevrons-left')
         nav.flex-1.overflow-y-auto.px-3.py-4.space-y-1
           block sidebarNav
             block sidebarSections
@@ -35,13 +37,13 @@ html.h-full
       //- Mobile overlay
       div#vg-overlay.fixed.inset-0.z-30.hidden(class="bg-black/60")
       //- Main content
-      .flex-1.min-w-0.flex.flex-col(class="md:pl-64")
+      .flex-1.min-w-0.flex.flex-col#vg-main(class="md:pl-64")
         //- Sticky header
         header.h-14.sticky.top-0.z-20.flex.items-center.px-4.gap-3.border-b.border-slate-200.shrink-0(class="bg-white/95 dark:bg-slate-900/95 dark:border-slate-800 backdrop-blur")
           block topHeader
             .flex.items-center.gap-3.flex-1.min-w-0
               .flex.items-center.gap-2.shrink-0
-                button#vg-menu-btn.p-2.rounded-lg.text-slate-500(class="md:hidden hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800", aria-label="Open menu")
+                button#vg-menu-btn.p-2.rounded-lg.text-slate-500(class="hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800", aria-label="Toggle sidebar")
                   +icon('menu')
                 block topHeaderLeft
                   if schemaName && confOpts && confOpts[schemaName] && !confOpts[schemaName].conf.readonly
@@ -125,24 +127,50 @@ html.h-full
         include foot
     script.
       (function() {
+        var html = document.documentElement;
+        var sidebar = document.getElementById('vg-sidebar');
+        var overlay = document.getElementById('vg-overlay');
+        var main = document.getElementById('vg-main');
+
         function vgSidebarOpen() {
-          document.getElementById('vg-sidebar').classList.remove('-translate-x-full');
-          document.getElementById('vg-overlay').classList.remove('hidden');
+          sidebar.classList.remove('-translate-x-full');
+          overlay.classList.remove('hidden');
         }
         function vgSidebarClose() {
-          document.getElementById('vg-sidebar').classList.add('-translate-x-full');
-          document.getElementById('vg-overlay').classList.add('hidden');
+          sidebar.classList.add('-translate-x-full');
+          overlay.classList.add('hidden');
         }
+        function vgSidebarCollapse(force) {
+          var closed = force !== undefined ? force : !html.classList.contains('sidebar-closed');
+          closed ? html.classList.add('sidebar-closed') : html.classList.remove('sidebar-closed');
+          localStorage.setItem('vg-sidebar-closed', closed ? '1' : '0');
+          var cb = document.getElementById('vg-collapse-btn');
+          if (cb) cb.querySelector('svg') && (cb.innerHTML = closed
+            ? '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5"/></svg>'
+            : '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M18.75 4.5l-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5"/></svg>');
+        }
+        // Set correct initial icon for collapse btn
+        if (html.classList.contains('sidebar-closed')) vgSidebarCollapse(true);
+
         var mb = document.getElementById('vg-menu-btn');
-        if (mb) mb.addEventListener('click', vgSidebarOpen);
-        document.getElementById('vg-overlay').addEventListener('click', vgSidebarClose);
+        if (mb) mb.addEventListener('click', function() {
+          if (window.innerWidth >= 768) {
+            vgSidebarCollapse();
+          } else {
+            vgSidebarOpen();
+          }
+        });
+
+        var cb = document.getElementById('vg-collapse-btn');
+        if (cb) cb.addEventListener('click', function() { vgSidebarCollapse(); });
+
+        if (overlay) overlay.addEventListener('click', vgSidebarClose);
         document.addEventListener('click', function(e) {
           if (window.innerWidth >= 768) return;
           var link = e.target && e.target.closest ? e.target.closest('#vg-sidebar a') : null;
           if (link) vgSidebarClose();
         });
         (function() {
-          var html = document.documentElement;
           var btn = document.getElementById('vg-theme-btn');
           var iconEl = document.getElementById('vg-theme-icon');
           var SUN = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/></svg>';
@@ -159,9 +187,6 @@ html.h-full
         document.addEventListener('toggle', function(e) {
           var d = e && e.target;
           if (!d || !d.matches || !d.matches('details.sidebar-expandable') || d.open === undefined || !d.open) return;
-          var sidebar = document.getElementById('vg-sidebar');
-          if (sidebar) sidebar.classList.add('-translate-x-full');
-          var overlay = document.getElementById('vg-overlay');
-          if (overlay) overlay.classList.add('hidden');
+          if (window.innerWidth < 768) { vgSidebarClose(); }
         }, true);
       })();
