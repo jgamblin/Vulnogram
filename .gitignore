@@ -21,3 +21,6 @@ docs/.screenshot-state.json
 # Vite
 dist/
 *.local
+
+# Playwright
+tests/results/
