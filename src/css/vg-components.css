@@ -80,3 +80,84 @@
   @apply bg-severity-none-bg text-severity-none
          dark:bg-green-900/30 dark:text-green-400;
 }
+
+/* Sidebar layout */
+.vg-sidebar {
+  @apply w-56 border-r border-vg-200 flex flex-col
+         bg-vg-50/50 transition-all duration-200 ease-in-out
+         dark:border-vg-800 dark:bg-vg-900/50;
+}
+
+.vg-sidebar.collapsed {
+  @apply w-12;
+}
+
+.vg-sidebar-brand {
+  @apply h-14 flex items-center px-4 font-semibold text-sm tracking-tight
+         border-b border-vg-200 dark:border-vg-800;
+}
+
+.vg-sidebar.collapsed .vg-sidebar-brand {
+  @apply px-2 justify-center;
+}
+
+.vg-sidebar-nav {
+  @apply flex-1 px-2 py-2 space-y-0.5 text-sm overflow-y-auto overflow-x-hidden;
+}
+
+.vg-sidebar-item {
+  @apply flex items-center gap-3 px-3 py-2 rounded-lg
+         text-vg-600 hover:bg-vg-100 hover:text-vg-900
+         transition-colors cursor-pointer whitespace-nowrap overflow-hidden
+         dark:text-vg-400 dark:hover:bg-vg-800 dark:hover:text-vg-100;
+}
+
+.vg-sidebar-item.active {
+  @apply bg-vg-100 text-vg-900 font-medium
+         dark:bg-vg-800 dark:text-vg-100;
+}
+
+.vg-sidebar.collapsed .vg-sidebar-item {
+  @apply px-0 justify-center;
+}
+
+.vg-sidebar.collapsed .vg-sidebar-label {
+  @apply hidden;
+}
+
+.vg-sidebar-icon {
+  @apply w-5 h-5 flex-shrink-0;
+}
+
+.vg-sidebar-footer {
+  @apply px-2 py-2 border-t border-vg-200 dark:border-vg-800;
+}
+
+.vg-topbar {
+  @apply h-14 border-b border-vg-200 flex items-center px-4 gap-3
+         bg-white dark:bg-vg-950 dark:border-vg-800;
+}
+
+.vg-topbar-search {
+  @apply flex items-center gap-2 px-3 py-1.5 rounded-lg
+         bg-vg-100 text-vg-400 text-sm cursor-pointer
+         hover:bg-vg-200 transition-colors
+         dark:bg-vg-800 dark:text-vg-500 dark:hover:bg-vg-700;
+}
+
+.vg-sidebar-overlay {
+  @apply fixed inset-0 bg-black/30 z-40 hidden
+         dark:bg-black/50;
+}
+
+@media (max-width: 768px) {
+  .vg-sidebar {
+    @apply fixed inset-y-0 left-0 z-50 -translate-x-full;
+  }
+  .vg-sidebar.mobile-open {
+    @apply translate-x-0;
+  }
+  .vg-sidebar.mobile-open ~ .vg-sidebar-overlay {
+    @apply block;
+  }
+}

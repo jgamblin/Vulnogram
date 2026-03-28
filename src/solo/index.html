@@ -1,48 +1,116 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vulnogram — CVE Editor</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
-  <link rel="stylesheet" href="../css/main.css">
-</head>
-<body class="bg-white text-vg-900 dark:bg-vg-950 dark:text-vg-100 min-h-screen">
-  <div id="app" class="flex min-h-screen">
-    <!-- Sidebar -->
-    <aside id="sidebar" class="w-56 border-r border-vg-200 dark:border-vg-800 flex flex-col bg-vg-50/50 dark:bg-vg-900/50">
-      <div class="p-4 font-semibold text-sm tracking-tight">Vulnogram</div>
-      <nav class="flex-1 px-2 space-y-0.5 text-sm">
-        <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-vg-100 dark:bg-vg-800 text-vg-900 dark:text-vg-100 font-medium">
-          CVE Editor
-        </a>
-      </nav>
-    </aside>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vulnogram — CVE Editor</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>"
+    />
+    <link rel="stylesheet" href="../css/main.css" />
+  </head>
+  <body
+    class="bg-white text-vg-900 dark:bg-vg-950 dark:text-vg-100 min-h-screen"
+  >
+    <div id="app" class="flex min-h-screen">
+      <!-- Sidebar overlay (mobile) -->
+      <div id="sidebar-overlay" class="vg-sidebar-overlay"></div>
 
-    <!-- Main content -->
-    <main class="flex-1 flex flex-col">
-      <!-- Top bar -->
-      <header class="h-14 border-b border-vg-200 dark:border-vg-800 flex items-center px-4 gap-4">
-        <div class="flex-1"></div>
-        <button id="theme-toggle" class="vg-btn-ghost p-2" aria-label="Toggle dark mode">
-          <svg class="w-5 h-5 dark:hidden" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"/></svg>
-          <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/></svg>
-        </button>
-      </header>
+      <!-- Sidebar -->
+      <aside id="sidebar" class="vg-sidebar">
+        <div class="vg-sidebar-brand">
+          <span class="vg-sidebar-label">Vulnogram</span>
+          <span class="vg-sidebar-collapsed-brand hidden font-semibold">V</span>
+        </div>
+        <nav class="vg-sidebar-nav">
+          <a href="#" class="vg-sidebar-item active" data-section="cve">
+            <span data-icon="cve" class="vg-sidebar-icon"></span>
+            <span class="vg-sidebar-label">CVE Editor</span>
+          </a>
+          <a href="#" class="vg-sidebar-item" data-section="calculator">
+            <span data-icon="calculator" class="vg-sidebar-icon"></span>
+            <span class="vg-sidebar-label">CVSS Calculator</span>
+          </a>
+        </nav>
+        <div class="vg-sidebar-footer">
+          <button
+            id="sidebar-toggle"
+            class="vg-sidebar-item w-full"
+            aria-label="Toggle sidebar"
+          >
+            <span
+              data-icon="chevronLeft"
+              data-collapsed-icon="chevronRight"
+              class="vg-sidebar-icon"
+            ></span>
+            <span class="vg-sidebar-label">Collapse</span>
+          </button>
+        </div>
+      </aside>
 
-      <!-- Content area -->
-      <div id="content" class="flex-1 p-6 max-w-4xl mx-auto w-full">
-        <h1 class="text-2xl font-semibold mb-2">CVE Editor</h1>
-        <p class="text-vg-500 dark:text-vg-400 mb-8">Create and edit CVE records</p>
+      <!-- Main content -->
+      <main class="flex-1 flex flex-col min-w-0">
+        <!-- Top bar -->
+        <header class="vg-topbar">
+          <button
+            id="mobile-menu-btn"
+            class="vg-btn-ghost p-2 md:hidden"
+            aria-label="Open menu"
+          >
+            <span data-icon="bars3"></span>
+          </button>
+          <button id="search-trigger" class="vg-topbar-search">
+            <span data-icon="search"></span>
+            <span>Search...</span>
+            <kbd class="ml-2 text-xs text-vg-300 dark:text-vg-600">⌘K</kbd>
+          </button>
+          <div class="flex-1"></div>
+          <button
+            id="theme-toggle"
+            class="vg-btn-ghost p-2"
+            aria-label="Toggle dark mode"
+          >
+            <span data-icon="moon" class="dark:hidden"></span>
+            <span data-icon="sun" class="hidden dark:block"></span>
+          </button>
+        </header>
 
-        <!-- Placeholder for form engine (Task 2+ plans) -->
-        <div class="vg-card">
-          <p class="text-sm text-vg-500">Form engine will render here.</p>
+        <!-- Content area -->
+        <div id="content" class="flex-1 p-6 max-w-4xl mx-auto w-full">
+          <h1 class="text-2xl font-semibold mb-2">CVE Editor</h1>
+          <p class="text-vg-500 dark:text-vg-400 mb-8">
+            Create and edit CVE records
+          </p>
+
+          <!-- Placeholder for form engine -->
+          <div class="vg-card">
+            <p class="text-sm text-vg-500">Form engine will render here.</p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Command palette modal shell -->
+    <div id="command-palette" class="fixed inset-0 z-50 hidden">
+      <div
+        class="fixed inset-0 bg-black/50 dark:bg-black/70"
+        id="command-palette-backdrop"
+      ></div>
+      <div class="fixed inset-x-4 top-[20%] mx-auto max-w-lg">
+        <div class="vg-card shadow-2xl">
+          <input
+            id="command-palette-input"
+            type="text"
+            class="vg-input"
+            placeholder="Type a command..."
+            autocomplete="off"
+          />
+          <div id="command-palette-results" class="mt-2"></div>
         </div>
       </div>
-    </main>
-  </div>
+    </div>
 
-  <script type="module" src="./app.js"></script>
-</body>
+    <script type="module" src="./app.js"></script>
+  </body>
 </html>
