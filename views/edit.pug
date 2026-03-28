@@ -85,6 +85,7 @@ block content
                 block editorArea
                     iframe.hid(name="x",src="about:blank")
                     form.editor(target="x",action="",id="docEditor")
+                    div#form-root.hidden
                     if !min
                         a#remove.gap.flr.fbn.vgi-del.tred Delete this entry from local Vulnogram database
         block sourceTab
@@ -151,6 +152,9 @@ block content
     if doc && doc.body
         script getChanges("#{doc_id}");
     +alertDialog
+
+block modernScripts
+    script(type="module" src=conf.basedir + "dist/editor.js")
 
 block subcontent
     if !min

@@ -7,7 +7,7 @@ html
     title= title
     block head
         include head
-  body#body(class=schemaName)
+  body#body(class=schemaName + ' bg-white text-vg-900 dark:bg-vg-950 dark:text-vg-100')
     //- CSS-only sidebar toggle checkbox
     input#sidebarToggle(type="checkbox" checked=true)
     
@@ -129,3 +129,5 @@ html
 
         //- Footer
         include foot
+
+        block modernScripts

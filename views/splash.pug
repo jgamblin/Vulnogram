@@ -1,32 +1,18 @@
 //- Copyright (c) 2017 Chandan B N. All rights reserved.
 
 doctype html
-html
+html(class="")
   head
     title= title
     include head
-    style
-    //  include ./users/style.css
-  body.sec.wlp
-    .pad2.gap2
-    .pad2.gap2
-    center
-      table.rnd.wht.shd
-       tr
-        td.center(width="315px" style="border-right:1px dashed #eee")
-           .pad2.gap2
-            .slogo
-                include ../public/css/logo.svg
-            
-            .big Vulnogram
-            small.sml(style="text-transform:uppercase;font-size:12px;")
-                | Making the world safer
-                br
-                | one CVE ID at a time
-                br
-                | Since 2017
-        td.pad2
-            !=messages()
-            .pad.gap#message
-            block content
-      include foot
+  body(class="bg-vg-50 dark:bg-vg-950 min-h-screen flex items-center justify-center")
+    div(class="w-full max-w-md")
+      div(class="bg-white dark:bg-vg-900 rounded-2xl shadow-xl border border-vg-200 dark:border-vg-700 p-8")
+        div(class="text-center mb-8")
+          div(class="text-3xl font-bold text-vg-900 dark:text-vg-100 mb-1") Vulnogram
+          p(class="text-sm text-vg-500 dark:text-vg-400") Making the world safer one CVE at a time
+        div(class="mb-4")
+          !=messages()
+        block content
+      div(class="text-center mt-6")
+        include foot
