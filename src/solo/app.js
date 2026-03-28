@@ -23,6 +23,24 @@ document.getElementById("theme-toggle")?.addEventListener("click", toggleTheme);
 initSidebar();
 initCommandPalette();
 
+// Sidebar navigation
+document.querySelectorAll("[data-section]").forEach((link) => {
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+    const section = link.dataset.section;
+
+    // Update active sidebar item
+    document.querySelectorAll("[data-section]").forEach((l) => {
+      l.classList.toggle("active", l === link);
+    });
+
+    // Show/hide pages
+    document.querySelectorAll("[data-page]").forEach((page) => {
+      page.classList.toggle("hidden", page.dataset.page !== section);
+    });
+  });
+});
+
 // Current draft ID
 let currentDraftId =
   new URLSearchParams(window.location.search).get("doc") || "new";

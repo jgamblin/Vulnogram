@@ -78,43 +78,71 @@
 
         <!-- Content area -->
         <div id="content" class="flex-1 p-6 max-w-4xl mx-auto w-full">
-          <!-- Form header (populated by app.js) -->
-          <div id="form-header" class="flex items-center justify-between mb-6">
-            <div>
-              <div
-                class="text-sm text-vg-500 dark:text-vg-400"
-                id="form-status"
-              >
-                New Record
+          <!-- CVE Editor page -->
+          <div data-page="cve">
+            <!-- Form header (populated by app.js) -->
+            <div
+              id="form-header"
+              class="flex items-center justify-between mb-6"
+            >
+              <div>
+                <div
+                  class="text-sm text-vg-500 dark:text-vg-400"
+                  id="form-status"
+                >
+                  New Record
+                </div>
+                <h1 class="text-2xl font-semibold" id="form-title">
+                  CVE Editor
+                </h1>
               </div>
-              <h1 class="text-2xl font-semibold" id="form-title">CVE Editor</h1>
+              <div class="flex gap-2">
+                <button id="btn-import" class="vg-btn">Import JSON</button>
+                <button id="btn-save-draft" class="vg-btn">Save Draft</button>
+                <button id="btn-export" class="vg-btn-primary">
+                  Export JSON
+                </button>
+              </div>
             </div>
-            <div class="flex gap-2">
-              <button id="btn-import" class="vg-btn">Import JSON</button>
-              <button id="btn-save-draft" class="vg-btn">Save Draft</button>
-              <button id="btn-export" class="vg-btn-primary">
-                Export JSON
-              </button>
+
+            <!-- Tab bar -->
+            <div class="vg-tabs">
+              <button class="vg-tab active" data-tab="form">Form</button>
+              <button class="vg-tab" data-tab="source">Source</button>
+            </div>
+
+            <!-- Tab panels -->
+            <div data-tab-panel="form">
+              <!-- Form engine mount point -->
+              <div id="form-root"></div>
+            </div>
+            <div data-tab-panel="source" class="hidden">
+              <textarea
+                id="source-editor"
+                class="vg-source-editor"
+                spellcheck="false"
+              ></textarea>
             </div>
           </div>
 
-          <!-- Tab bar -->
-          <div class="vg-tabs">
-            <button class="vg-tab active" data-tab="form">Form</button>
-            <button class="vg-tab" data-tab="source">Source</button>
-          </div>
-
-          <!-- Tab panels -->
-          <div data-tab-panel="form">
-            <!-- Form engine mount point -->
-            <div id="form-root"></div>
-          </div>
-          <div data-tab-panel="source" class="hidden">
-            <textarea
-              id="source-editor"
-              class="vg-source-editor"
-              spellcheck="false"
-            ></textarea>
+          <!-- CVSS Calculator page -->
+          <div data-page="calculator" class="hidden">
+            <h1 class="text-2xl font-semibold mb-2">CVSS 4.0 Calculator</h1>
+            <p class="text-vg-500 dark:text-vg-400 mb-8">
+              Calculate Common Vulnerability Scoring System v4.0 scores
+            </p>
+            <div class="vg-card p-6">
+              <p class="text-sm text-vg-500 dark:text-vg-400">
+                CVSS 4.0 calculator will be integrated here in a future update.
+              </p>
+              <p class="text-sm text-vg-500 dark:text-vg-400 mt-2">
+                The calculator engine from
+                <code class="text-vg-700 dark:text-vg-300"
+                  >default/cvss4/static/cvss40.js</code
+                >
+                will be wired into this view.
+              </p>
+            </div>
           </div>
         </div>
       </main>
