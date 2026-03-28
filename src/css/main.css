@@ -1,5 +1,6 @@
-@import 'tailwindcss';
-@import './vg-components.css';
+@import "tailwindcss";
+@import "./vg-components.css";
+@import "./vg-forms.css";
 
 /* Design tokens — Vulnogram neutral palette */
 @theme {
