@@ -11,6 +11,7 @@
     "restart": "forever restart app.js",
     "dev": "vite --config vite.solo.config.js",
     "build:solo": "vite build --config vite.solo.config.js",
+    "build:team": "vite build --config vite.team.config.js",
     "preview:solo": "vite preview --config vite.solo.config.js",
     "test:visual": "npx playwright test --project=visual"
   },
