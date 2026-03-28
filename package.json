@@ -8,7 +8,10 @@
     "test": "nodemon app",
     "start": "./scripts/start.sh",
     "stop": "forever stop app.js",
-    "restart": "forever restart app.js"
+    "restart": "forever restart app.js",
+    "dev": "vite --config vite.solo.config.js",
+    "build:solo": "vite build --config vite.solo.config.js",
+    "preview:solo": "vite preview --config vite.solo.config.js"
   },
   "author": "Chandan B N.",
   "license": "See LICENSE.md",
@@ -61,5 +64,10 @@
     "JSON",
     "schema",
     "editor"
-  ]
+  ],
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.2.2",
+    "tailwindcss": "^4.2.2",
+    "vite": "^6.4.1"
+  }
 }
