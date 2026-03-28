@@ -16,7 +16,7 @@ test.describe("Solo mode scaffolding", () => {
 
     // Content area visible
     await expect(page.locator("#content")).toBeVisible();
-    await expect(page.locator("h1")).toContainText("CVE Editor");
+    await expect(page.locator("h1").first()).toContainText("CVE Editor");
 
     // Visual snapshot — light mode
     await expect(page).toHaveScreenshot("layout-light.png");
@@ -194,5 +194,79 @@ test.describe("Form engine", () => {
     const pills = page.locator(".vg-pills").first();
     await expect(pills).toBeVisible();
     await expect(pills).toContainText("PUBLISHED");
+  });
+});
+
+test.describe("Tab bar and source view", () => {
+  test("tab bar visible with Form and Source tabs", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForSelector("#form-root");
+
+    const formTab = page.locator('[data-tab="form"]');
+    const sourceTab = page.locator('[data-tab="source"]');
+    await expect(formTab).toBeVisible();
+    await expect(sourceTab).toBeVisible();
+    await expect(formTab).toHaveClass(/active/);
+  });
+
+  test("switching to source tab shows JSON editor", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForSelector("#form-root");
+
+    await page.click('[data-tab="source"]');
+    const editor = page.locator("#source-editor");
+    await expect(editor).toBeVisible();
+
+    // Should contain valid JSON
+    const value = await editor.inputValue();
+    expect(() => JSON.parse(value)).not.toThrow();
+  });
+
+  test("editing source JSON and switching to form applies changes", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.waitForSelector("#form-root");
+
+    // Switch to source tab
+    await page.click('[data-tab="source"]');
+    const editor = page.locator("#source-editor");
+    await expect(editor).toBeVisible();
+
+    // Set JSON with a CVE ID
+    await editor.fill(
+      JSON.stringify({ cveMetadata: { cveId: "CVE-2024-99999" } }, null, 2),
+    );
+
+    // Switch back to form — should apply JSON to form
+    await page.click('[data-tab="form"]');
+    await expect(page.locator('input[name="cveMetadata.cveId"]')).toHaveValue(
+      "CVE-2024-99999",
+    );
+  });
+});
+
+test.describe("Sidebar navigation", () => {
+  test("clicking CVSS Calculator shows calculator page", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForSelector("#form-root");
+
+    await page.click('[data-section="calculator"]');
+    await expect(page.locator('[data-page="calculator"]')).toBeVisible();
+    await expect(page.locator('[data-page="cve"]')).toBeHidden();
+    await expect(page.locator('[data-page="calculator"]')).toContainText(
+      "CVSS 4.0 Calculator",
+    );
+  });
+
+  test("clicking CVE Editor returns to editor", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForSelector("#form-root");
+
+    // Navigate to calculator and back
+    await page.click('[data-section="calculator"]');
+    await page.click('[data-section="cve"]');
+    await expect(page.locator('[data-page="cve"]')).toBeVisible();
+    await expect(page.locator('[data-page="calculator"]')).toBeHidden();
   });
 });
