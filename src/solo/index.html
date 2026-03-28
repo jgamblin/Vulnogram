@@ -98,8 +98,24 @@
             </div>
           </div>
 
-          <!-- Form engine mount point -->
-          <div id="form-root"></div>
+          <!-- Tab bar -->
+          <div class="vg-tabs">
+            <button class="vg-tab active" data-tab="form">Form</button>
+            <button class="vg-tab" data-tab="source">Source</button>
+          </div>
+
+          <!-- Tab panels -->
+          <div data-tab-panel="form">
+            <!-- Form engine mount point -->
+            <div id="form-root"></div>
+          </div>
+          <div data-tab-panel="source" class="hidden">
+            <textarea
+              id="source-editor"
+              class="vg-source-editor"
+              spellcheck="false"
+            ></textarea>
+          </div>
         </div>
       </main>
     </div>

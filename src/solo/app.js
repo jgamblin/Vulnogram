@@ -2,6 +2,8 @@
 import { initTheme, toggleTheme } from "../ui/theme.js";
 import { initSidebar } from "../ui/sidebar.js";
 import { initCommandPalette } from "../ui/command-palette.js";
+import { initTabs } from "../ui/tabs.js";
+import { showToast } from "../ui/toast.js";
 import { FormEngine } from "../core/form-engine.js";
 import {
   initValidator,
@@ -42,6 +44,25 @@ async function initForm() {
     const draft = await loadDraft(currentDraftId).catch(() => null);
     engine.mount(draft || {});
 
+    // Initialize tabs
+    const sourceEditor = document.getElementById("source-editor");
+    initTabs({
+      onTabChange: (tab) => {
+        if (tab === "source") {
+          // Sync form data to source editor
+          sourceEditor.value = JSON.stringify(getDocument(), null, 2);
+        } else if (tab === "form") {
+          // Sync source editor back to form
+          try {
+            const doc = JSON.parse(sourceEditor.value);
+            engine.setValue(doc);
+          } catch (e) {
+            showToast("Invalid JSON — changes not applied");
+          }
+        }
+      },
+    });
+
     // Auto-save drafts on state changes (2-second debounce)
     let saveTimeout;
     subscribe(() => {
@@ -51,7 +72,7 @@ async function initForm() {
         await saveDraft(currentDraftId, doc).catch((e) =>
           console.warn("Draft save failed:", e),
         );
-        updateStatus("Draft saved");
+        showToast("Draft saved");
       }, 2000);
     });
 
@@ -79,7 +100,7 @@ async function initForm() {
             currentDraftId = cveId;
             updateURL(currentDraftId);
           }
-          updateStatus("Imported successfully");
+          showToast("Imported successfully");
         } catch (e) {
           if (e.message !== "No file selected") {
             console.error("Import failed:", e);
@@ -98,7 +119,7 @@ async function initForm() {
           updateURL(currentDraftId);
         }
         await saveDraft(currentDraftId, doc);
-        updateStatus("Draft saved");
+        showToast("Draft saved");
       });
 
     // Export button
