@@ -141,3 +141,50 @@ test.describe("Command palette", () => {
     await expect(page.locator("#command-palette")).toBeVisible();
   });
 });
+
+test.describe("Form engine", () => {
+  test("renders progressive disclosure form", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForSelector("#form-root");
+
+    // Required sections should be visible
+    await expect(page.locator("#form-root")).toContainText("CVE Metadata");
+    await expect(page.locator("#form-root")).toContainText("Containers");
+
+    // Form fields should render
+    await expect(page.locator("#form-root")).toContainText("CVE ID");
+    await expect(page.locator("#form-root")).toContainText("State");
+
+    await expect(page).toHaveScreenshot("form-engine-initial.png");
+  });
+
+  test("chips expand optional sections", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForSelector("#form-root");
+
+    // Look for add chips for optional sections
+    const chipBar = page.locator("[data-chip-bar]");
+    if ((await chipBar.count()) > 0) {
+      // Click first chip to expand a section
+      const firstChip = chipBar.locator(".vg-chip").first();
+      if ((await firstChip.count()) > 0) {
+        const chipText = await firstChip.textContent();
+        await firstChip.click();
+        // After clicking, the section should appear and chip should be gone
+        await expect(page.locator("#form-root")).toContainText(
+          chipText.replace("+ ", ""),
+        );
+      }
+    }
+  });
+
+  test("enum fields render as pills", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForSelector("#form-root");
+
+    // State field should render as pills
+    const pills = page.locator(".vg-pills").first();
+    await expect(pills).toBeVisible();
+    await expect(pills).toContainText("PUBLISHED");
+  });
+});

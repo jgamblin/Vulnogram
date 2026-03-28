@@ -78,15 +78,27 @@
 
         <!-- Content area -->
         <div id="content" class="flex-1 p-6 max-w-4xl mx-auto w-full">
-          <h1 class="text-2xl font-semibold mb-2">CVE Editor</h1>
-          <p class="text-vg-500 dark:text-vg-400 mb-8">
-            Create and edit CVE records
-          </p>
-
-          <!-- Placeholder for form engine -->
-          <div class="vg-card">
-            <p class="text-sm text-vg-500">Form engine will render here.</p>
+          <!-- Form header (populated by app.js) -->
+          <div id="form-header" class="flex items-center justify-between mb-6">
+            <div>
+              <div
+                class="text-sm text-vg-500 dark:text-vg-400"
+                id="form-status"
+              >
+                New Record
+              </div>
+              <h1 class="text-2xl font-semibold" id="form-title">CVE Editor</h1>
+            </div>
+            <div class="flex gap-2">
+              <button id="btn-save-draft" class="vg-btn">Save Draft</button>
+              <button id="btn-export" class="vg-btn-primary">
+                Export JSON
+              </button>
+            </div>
           </div>
+
+          <!-- Form engine mount point -->
+          <div id="form-root"></div>
         </div>
       </main>
     </div>
