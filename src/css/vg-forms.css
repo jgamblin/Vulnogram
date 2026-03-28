@@ -100,3 +100,12 @@
 .vg-toggle.active .vg-toggle-dot {
   @apply translate-x-6;
 }
+
+/* Validation error states */
+.vg-field.has-error .vg-input {
+  @apply border-red-400 dark:border-red-500;
+}
+
+.vg-field.has-error .vg-field-label {
+  @apply text-red-600 dark:text-red-400;
+}
