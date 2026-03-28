@@ -1,0 +1,82 @@
+/* Vulnogram component classes — built with @apply on Tailwind utilities */
+/* Each class includes dark: variants for dark mode support */
+
+.vg-btn {
+  @apply inline-flex items-center justify-center px-4 py-2
+         text-sm font-medium rounded-md
+         border border-vg-300 bg-white text-vg-700
+         hover:bg-vg-50 transition-colors cursor-pointer
+         dark:bg-vg-800 dark:text-vg-200 dark:border-vg-600 dark:hover:bg-vg-700;
+}
+
+.vg-btn-primary {
+  @apply inline-flex items-center justify-center px-4 py-2
+         text-sm font-medium rounded-md
+         border border-transparent bg-vg-900 text-white
+         hover:bg-vg-800 transition-colors cursor-pointer
+         dark:bg-white dark:text-vg-900 dark:hover:bg-vg-100;
+}
+
+.vg-btn-ghost {
+  @apply inline-flex items-center justify-center px-4 py-2
+         text-sm font-medium rounded-md
+         border border-transparent bg-transparent text-vg-600
+         hover:bg-vg-100 transition-colors cursor-pointer
+         dark:text-vg-400 dark:hover:bg-vg-800;
+}
+
+.vg-input {
+  @apply w-full px-3 py-2 text-sm rounded-lg
+         border border-vg-200 bg-white text-vg-900
+         placeholder:text-vg-400
+         focus:outline-none focus:ring-2 focus:ring-vg-900/10 focus:border-vg-400
+         dark:bg-vg-900 dark:text-vg-100 dark:border-vg-700
+         dark:placeholder:text-vg-500 dark:focus:ring-white/10;
+}
+
+.vg-card {
+  @apply border border-vg-200 rounded-xl p-4
+         bg-white
+         dark:bg-vg-900 dark:border-vg-700;
+}
+
+.vg-chip {
+  @apply inline-flex items-center px-3 py-1.5
+         text-sm text-vg-500 rounded-lg
+         border border-dashed border-vg-300
+         bg-vg-50 cursor-pointer
+         hover:border-vg-400 hover:text-vg-700 hover:bg-vg-100
+         transition-colors
+         dark:text-vg-400 dark:bg-vg-800/50 dark:border-vg-600
+         dark:hover:border-vg-500 dark:hover:text-vg-300;
+}
+
+.vg-badge {
+  @apply inline-flex items-center px-2 py-0.5
+         text-xs font-semibold rounded-full;
+}
+
+.vg-badge-critical {
+  @apply bg-severity-critical-bg text-severity-critical
+         dark:bg-red-900/30 dark:text-red-400;
+}
+
+.vg-badge-high {
+  @apply bg-severity-high-bg text-severity-high
+         dark:bg-orange-900/30 dark:text-orange-400;
+}
+
+.vg-badge-medium {
+  @apply bg-severity-medium-bg text-severity-medium
+         dark:bg-yellow-900/30 dark:text-yellow-400;
+}
+
+.vg-badge-low {
+  @apply bg-severity-low-bg text-severity-low
+         dark:bg-blue-900/30 dark:text-blue-400;
+}
+
+.vg-badge-none {
+  @apply bg-severity-none-bg text-severity-none
+         dark:bg-green-900/30 dark:text-green-400;
+}

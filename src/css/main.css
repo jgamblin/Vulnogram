@@ -1,0 +1,31 @@
+@import 'tailwindcss';
+@import './vg-components.css';
+
+/* Design tokens — Vulnogram neutral palette */
+@theme {
+  --color-vg-50: #f9fafb;
+  --color-vg-100: #f3f4f6;
+  --color-vg-200: #e5e7eb;
+  --color-vg-300: #d1d5db;
+  --color-vg-400: #9ca3af;
+  --color-vg-500: #6b7280;
+  --color-vg-600: #4b5563;
+  --color-vg-700: #374151;
+  --color-vg-800: #1f2937;
+  --color-vg-900: #111827;
+  --color-vg-950: #030712;
+
+  /* Severity colors */
+  --color-severity-critical: #dc2626;
+  --color-severity-high: #ea580c;
+  --color-severity-medium: #ca8a04;
+  --color-severity-low: #2563eb;
+  --color-severity-none: #16a34a;
+
+  /* Severity backgrounds (light) */
+  --color-severity-critical-bg: #fef2f2;
+  --color-severity-high-bg: #fff7ed;
+  --color-severity-medium-bg: #fefce8;
+  --color-severity-low-bg: #eff6ff;
+  --color-severity-none-bg: #f0fdf4;
+}
