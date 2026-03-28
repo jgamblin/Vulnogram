@@ -178,6 +178,14 @@ test.describe("Form engine", () => {
     }
   });
 
+  test("import and export buttons visible", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForSelector("#form-root");
+    await expect(page.locator("#btn-import")).toBeVisible();
+    await expect(page.locator("#btn-export")).toBeVisible();
+    await expect(page.locator("#btn-save-draft")).toBeVisible();
+  });
+
   test("enum fields render as pills", async ({ page }) => {
     await page.goto("/");
     await page.waitForSelector("#form-root");
