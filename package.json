@@ -66,6 +66,7 @@
     "editor"
   ],
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
     "@tailwindcss/vite": "^4.2.2",
     "tailwindcss": "^4.2.2",
     "vite": "^6.4.1"
