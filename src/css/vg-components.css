@@ -161,3 +161,24 @@
     @apply block;
   }
 }
+
+/* Command palette */
+.vg-palette-item {
+  @apply flex items-center gap-3 px-3 py-2 rounded-lg
+         text-sm text-vg-700 cursor-pointer
+         hover:bg-vg-100
+         dark:text-vg-300 dark:hover:bg-vg-800;
+}
+
+.vg-palette-item.selected {
+  @apply bg-vg-100 dark:bg-vg-800;
+}
+
+.vg-palette-item-icon {
+  @apply w-5 h-5 text-vg-400 dark:text-vg-500;
+}
+
+.vg-palette-section-label {
+  @apply px-3 py-1 text-xs font-medium text-vg-400 uppercase tracking-wider
+         dark:text-vg-500;
+}

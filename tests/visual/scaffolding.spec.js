@@ -99,3 +99,45 @@ test.describe("Solo mode scaffolding", () => {
     await expect(page.locator("#sidebar")).not.toHaveClass(/collapsed/);
   });
 });
+
+test.describe("Command palette", () => {
+  test("opens with Cmd+K and shows commands", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForSelector("#app");
+    await page.keyboard.press("Meta+k");
+    await expect(page.locator("#command-palette")).toBeVisible();
+    await expect(page.locator("#palette-input")).toBeFocused();
+    await expect(page.locator("#palette-results")).toContainText("CVE Editor");
+    await expect(page.locator("#palette-results")).toContainText(
+      "CVSS Calculator",
+    );
+    await expect(page).toHaveScreenshot("command-palette-open.png");
+  });
+
+  test("filters commands on input", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForSelector("#app");
+    await page.keyboard.press("Meta+k");
+    await page.fill("#palette-input", "cvss");
+    await expect(page.locator("#palette-results")).toContainText(
+      "CVSS Calculator",
+    );
+    await expect(page.locator(".vg-palette-item")).toHaveCount(1);
+  });
+
+  test("closes with Escape", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForSelector("#app");
+    await page.keyboard.press("Meta+k");
+    await expect(page.locator("#command-palette")).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.locator("#command-palette")).toBeHidden();
+  });
+
+  test("opens from search trigger click", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForSelector("#app");
+    await page.click("#search-trigger");
+    await expect(page.locator("#command-palette")).toBeVisible();
+  });
+});
