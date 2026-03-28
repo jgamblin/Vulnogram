@@ -73,6 +73,7 @@
     "@tailwindcss/postcss": "^4.2.2",
     "@tailwindcss/vite": "^4.2.2",
     "tailwindcss": "^4.2.2",
-    "vite": "^6.4.1"
+    "vite": "^6.4.1",
+    "vite-plugin-singlefile": "^2.3.2"
   }
 }
