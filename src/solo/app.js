@@ -14,6 +14,7 @@ import { saveDraft, loadDraft } from "../core/drafts.js";
 import { exportJSON, importJSON } from "../core/import-export.js";
 import { subscribe, getDocument, setDocument } from "../core/state.js";
 import { derefSchema } from "../core/schema-deref.js";
+import { renderCVSSPage } from "./cvss-page.js";
 
 // Import real CVE5 schema for validation and rendering
 import cve5Schema from "../../default/cve5/cve5.schema.json";
@@ -39,6 +40,14 @@ document.querySelectorAll("[data-section]").forEach((link) => {
     document.querySelectorAll("[data-page]").forEach((page) => {
       page.classList.toggle("hidden", page.dataset.page !== section);
     });
+
+    // Initialize CVSS calculator on first visit
+    if (section === "calculator") {
+      const cvssRoot = document.getElementById("cvss-root");
+      if (cvssRoot && !cvssRoot.hasChildNodes()) {
+        renderCVSSPage(cvssRoot);
+      }
+    }
   });
 });
 
