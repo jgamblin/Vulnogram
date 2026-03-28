@@ -79,3 +79,24 @@
   @apply border-vg-900 bg-vg-900 text-white
          dark:border-white dark:bg-white dark:text-vg-900;
 }
+
+/* Toggle switch */
+.vg-toggle {
+  @apply relative inline-flex h-6 w-11 items-center rounded-full
+         bg-vg-200 transition-colors cursor-pointer
+         dark:bg-vg-700;
+}
+
+.vg-toggle.active {
+  @apply bg-vg-900 dark:bg-white;
+}
+
+.vg-toggle-dot {
+  @apply inline-block h-4 w-4 rounded-full bg-white
+         transform transition-transform translate-x-1
+         dark:bg-vg-900;
+}
+
+.vg-toggle.active .vg-toggle-dot {
+  @apply translate-x-6;
+}
