@@ -1,7 +1,7 @@
 // Array renderer — repeatable groups with add/remove
 import { registerRenderer } from "./index.js";
 import { renderField } from "./index.js";
-import { createLabel } from "./string.js";
+import { createLabel, humanize } from "./string.js";
 
 function arrayRenderer(schema, path, value, onChange) {
   const wrapper = document.createElement("div");
@@ -73,7 +73,8 @@ function arrayRenderer(schema, path, value, onChange) {
     const addBtn = document.createElement("button");
     addBtn.type = "button";
     addBtn.className = "vg-array-add";
-    const itemTitle = itemSchema.title || schema.title || "item";
+    const rawTitle = itemSchema.title || schema.title || "item";
+    const itemTitle = rawTitle.includes(" ") ? rawTitle : humanize(rawTitle);
     addBtn.textContent = `+ Add ${itemTitle}`;
     addBtn.addEventListener("click", () => {
       const arr = [...(value || [])];

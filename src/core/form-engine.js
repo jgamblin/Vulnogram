@@ -2,6 +2,7 @@
 
 import { renderField } from "./renderers/index.js";
 import { createSection, createChip, createChipBar } from "./section-manager.js";
+import { humanize } from "./renderers/string.js";
 import {
   setValue,
   getValue,
@@ -114,7 +115,7 @@ export class FormEngine {
 
     if (propSchema.type === "object" && propSchema.properties) {
       // Render as a collapsible section card
-      const title = propSchema.title || key;
+      const title = propSchema.title || humanize(key);
       const { section, body } = createSection(title, key);
 
       const innerRequired = propSchema.required || [];
@@ -140,7 +141,7 @@ export class FormEngine {
       this.container.appendChild(section);
     } else if (propSchema.type === "array") {
       // Render array as section card
-      const title = propSchema.title || key;
+      const title = propSchema.title || humanize(key);
       const { section, body } = createSection(title, key);
 
       const fieldEl = renderField(propSchema, key, value, (path, val) => {

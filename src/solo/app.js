@@ -1,4 +1,5 @@
 // Solo mode entry point — Vulnogram UI Modernization
+import "../css/main.css";
 import { initTheme, toggleTheme } from "../ui/theme.js";
 import { initSidebar } from "../ui/sidebar.js";
 import { initCommandPalette } from "../ui/command-palette.js";

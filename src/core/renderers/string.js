@@ -1,16 +1,50 @@
 // String field renderer — text input, textarea, URL, email, datetime
 import { registerRenderer } from "./index.js";
 
+/** Turn camelCase / snake_case property names into readable labels */
+function humanize(str) {
+  // Known acronyms to keep uppercased
+  const acronyms = new Set([
+    "CVE",
+    "CNA",
+    "ADP",
+    "CPE",
+    "CVSS",
+    "CWE",
+    "URL",
+    "ID",
+    "SSA",
+    "SSVC",
+  ]);
+  return (
+    str
+      // insert space before capitals in camelCase
+      .replace(/([a-z])([A-Z])/g, "$1 $2")
+      // replace underscores / hyphens with spaces
+      .replace(/[_-]+/g, " ")
+      // capitalize each word, preserving acronyms
+      .split(/\s+/)
+      .map((w) =>
+        acronyms.has(w.toUpperCase())
+          ? w.toUpperCase()
+          : w.charAt(0).toUpperCase() + w.slice(1),
+      )
+      .join(" ")
+  );
+}
+
 function createLabel(schema, path) {
   const label = document.createElement("label");
   label.className = "vg-field-label";
   label.setAttribute("for", `field-${path}`);
-  label.textContent = schema.title || path.split(".").pop();
+  label.textContent = schema.title || humanize(path.split(".").pop());
   return label;
 }
 
-function createHelpText(schema) {
+function createHelpText(schema, placeholder) {
   if (!schema.description) return null;
+  // Don't show help text if it's identical to the placeholder
+  if (placeholder && schema.description === placeholder) return null;
   const help = document.createElement("p");
   help.className = "vg-field-help";
   help.textContent = schema.description;
@@ -43,8 +77,8 @@ function stringRenderer(schema, path, value, onChange) {
   input.id = `field-${path}`;
   input.name = path;
   input.value = value ?? "";
-  if (schema.examples?.[0]) input.placeholder = schema.examples[0];
-  else if (schema.description) input.placeholder = schema.description;
+  const placeholder = schema.examples?.[0] || schema.description || "";
+  if (placeholder) input.placeholder = placeholder;
   if (schema.readOnly) input.readOnly = true;
   if (schema.pattern) input.pattern = schema.pattern;
 
@@ -59,8 +93,8 @@ function stringRenderer(schema, path, value, onChange) {
 
   wrapper.appendChild(input);
 
-  // Help text
-  const help = createHelpText(schema);
+  // Help text (suppress if identical to placeholder)
+  const help = createHelpText(schema, placeholder);
   if (help) wrapper.appendChild(help);
 
   // Error placeholder
@@ -126,4 +160,4 @@ function numberRenderer(schema, path, value, onChange) {
 registerRenderer("string", stringRenderer);
 registerRenderer("number", numberRenderer);
 
-export { createLabel, createHelpText };
+export { createLabel, createHelpText, humanize };

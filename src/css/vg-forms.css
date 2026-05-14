@@ -31,10 +31,23 @@
          bg-white dark:bg-vg-900 dark:border-vg-700;
 }
 
+.vg-section-nested {
+  @apply border-vg-100 bg-vg-50/30 dark:bg-vg-800/20 dark:border-vg-700/60;
+}
+
 .vg-section-header {
   @apply flex items-center justify-between px-4 py-3 cursor-pointer
          hover:bg-vg-50 rounded-t-xl transition-colors
          dark:hover:bg-vg-800/50;
+}
+
+.vg-section-chevron {
+  @apply w-4 h-4 text-vg-400 dark:text-vg-500 flex-shrink-0 flex items-center;
+}
+
+.vg-section-chevron svg {
+  width: 16px;
+  height: 16px;
 }
 
 .vg-section-title {
@@ -47,6 +60,10 @@
 
 .vg-section.collapsed .vg-section-body {
   @apply hidden;
+}
+
+.vg-section.collapsed .vg-section-header {
+  @apply rounded-xl;
 }
 
 /* Array items */

@@ -1,4 +1,8 @@
 @import "tailwindcss";
+
+/* Tell Tailwind v4 to scan all source files for class usage */
+@source "../../src/**/*.{html,js,css}";
+
 @import "./vg-components.css";
 @import "./vg-forms.css";
 

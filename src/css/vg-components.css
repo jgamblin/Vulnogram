@@ -129,6 +129,13 @@
   @apply w-5 h-5 flex-shrink-0;
 }
 
+/* Constrain all injected SVG icons */
+[data-icon] svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
 .vg-sidebar-footer {
   @apply px-2 py-2 border-t border-vg-200 dark:border-vg-800;
 }
